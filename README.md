@@ -1,5 +1,5 @@
 # Linux2024
-<h1>OTUS. Vagrant: labs</h1>
+<h1>OTUS. Vagrant labs</h1>
 
 Vagrant mirror: https://vagrant.elab.pro<br>
 Box: bento/ubuntu-24.04<br>
