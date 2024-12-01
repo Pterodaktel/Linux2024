@@ -1,0 +1,133 @@
+---
+- name: LVM practice
+  hosts: hlvm
+  become: true
+
+
+  tasks:
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      tags:
+        - update-apt
+      notify:  
+        - unmount mnt
+
+    - name: Create a volume group on top of /dev/sdc and /dev/sdd 
+      community.general.lvg:
+        vg: vg_var
+        pvs: /dev/sdc,/dev/sdd
+      tags:
+        - create vg_var
+
+    # lvcreate -L 950M -m1 -n lv_var vg_var
+    - name: Create a logical volume of 950m 
+      community.general.lvol:
+        vg: vg_var
+        lv: lv_var
+        size: 950
+        opts: -m1
+        force: true
+      tags:
+        - create lv_var
+      notify:  
+        - unmount mnt          
+ 
+    #mkfs.ext4 /dev/vg_var/lv_var
+    - name: Format in ext4 
+      community.general.filesystem:
+        fstype: ext4
+        device: /dev/vg_var/lv_var
+      tags:
+        - format new var
+
+    - name: Mount /dev/vg_var/lv_var to /mnt
+      ansible.posix.mount:
+        path: /mnt
+        src: /dev/vg_var/lv_var
+        fstype: ext4
+        state: ephemeral
+      tags: 
+        - mount mnt
+
+    - name: Copy /var to /mnt
+      ansible.builtin.shell: cp -aR /var/* /mnt/
+      tags:
+        - copy var
+      notify:  
+        - unmount mnt  
+
+    # - name: Clear /var
+    #   ansible.builtin.shell: rm -rf /var/*
+    #   tags:
+    #     - clear var
+
+    - name: Mount to /var permanently
+      ansible.posix.mount:
+        path: /var
+        src: /dev/vg_var/lv_var
+        fstype: ext4
+        state: mounted
+      tags: 
+        - mount new var
+
+# HOME
+
+    # lvcreate -n LogVol_Home -L 2G /dev/ubuntu-vg
+    - name: Create a logical volume of 2G on ubuntu-vg
+      community.general.lvol:
+        vg: ubuntu-vg
+        lv: lv_home
+        size: 2000
+        force: true
+      tags:
+        - create lv_home
+
+    - name: Format home in ext4 
+      community.general.filesystem:
+        fstype: ext4
+        device: /dev/ubuntu-vg/lv_home       
+      tags:
+        - format new home
+      notify:  
+        - unmount mnt          
+
+    - name: Mount /dev/ubuntu-vg/lv_home to /mnt
+      ansible.posix.mount:
+        path: /mnt
+        src: /dev/ubuntu-vg/lv_home 
+        fstype: ext4
+        state: ephemeral
+      tags: 
+        - mount mnt
+
+    - name: Copy /home to /mnt
+      ansible.builtin.shell: cp -aR /home/* /mnt/
+      tags:
+        - copy home
+      notify:  
+        - unmount mnt  
+
+    # - name: Clear /home
+    #   ansible.builtin.shell: rm -rf /home/*
+    #   tags:
+    #     - clear home
+
+    - name: Mount to /home permanently
+      ansible.posix.mount:
+        path: /home
+        src: /dev/ubuntu-vg/lv_home 
+        fstype: ext4
+        state: mounted
+      tags: 
+        - mount /home
+
+
+  handlers:
+    - name: unmount mnt
+      ansible.posix.mount:
+        path: /mnt
+        state: unmounted
+
+    
