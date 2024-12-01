@@ -1,0 +1,48 @@
+echo "Уменьшить том под / до 8G"
+sudo -s
+pvcreate /dev/sdb
+vgcreate vg_root /dev/sdb
+lvcreate -n lv_root -l +100%FREE /dev/vg_root
+
+apt-get install dump
+mkfs.ext4 /dev/vg_root/lv_root
+mount /dev/vg_root/lv_root /mnt
+cd /mnt
+dump -0af - /dev/mapper/ubuntu--vg-ubuntu--lv | restore -rf -
+grub-mkconfig -o /boot/grub/grub.cfg
+update-initramfs -u
+reboot
+
+sudo -s
+lvremove /dev/ubuntu-vg/ubuntu-lv
+lvcreate -n ubuntu-vg/ubuntu-lv -L 8G /dev/ubuntu-vg
+y
+
+mkfs.ext4 /dev/ubuntu-vg/ubuntu-lv
+mount /dev/ubuntu-vg/ubuntu-lv /mnt
+cd /mnt
+dump -0af - /dev/vg_root/lv_root | restore -rf -
+for i in /proc/ /sys/ /dev/ /run/ /boot/;  do mount --bind $i /mnt/$i; done
+chroot /mnt/
+
+lvremove /dev/vg_root/lv_root
+vgremove /dev/vg_root
+pvremove /dev/sdb
+
+grub-mkconfig -o /boot/grub/grub.cfg
+ll /home
+update-initramfs -u
+reboot
+
+
+echo "Перенос /var и /home в ansible"
+ansible-playbook lvm.yml
+
+echo "Работа со снепшотами"
+
+sudo -s
+touch /home/file{1..20}
+lvcreate -L 100MB -s -n home_snap /dev/ubuntu-vg/lv_home
+rm -f /home/file{11..20}
+lvconvert --merge /dev/ubuntu-vg/home_snap
+reboot
