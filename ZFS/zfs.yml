@@ -1,0 +1,102 @@
+---
+- name: ZFS Lab
+  hosts: hzfs
+  become: true
+
+  tasks:
+   
+    # Part 1
+
+    #zpool create otus1 mirror /dev/sdb /dev/sdc
+    # - name: Create a volume group on top of /dev/sdb and /dev/sdc
+    #   community.general.zfs:
+    #     name: otus1
+    #     state: present
+    #     extra_zfs_properties:
+    #     mirror /dev/sdc /dev/sdd
+    #   tags:
+    #     - create 
+
+    - name: Create zpool mirror otus1
+      ansible.builtin.command: zpool create otus1 mirror /dev/sdb /dev/sdc
+      tags:
+         - create otus1
+
+    - name: Create zpool mirror otus2
+      ansible.builtin.command: zpool create otus2 mirror /dev/sdd /dev/sde
+      tags:
+         - create otus2
+
+    - name: Create zpool mirror otus3
+      ansible.builtin.command: zpool create otus3 mirror /dev/sdf /dev/sdg
+      tags:
+         - create otus3
+
+    - name: Create zpool mirror otus4
+      ansible.builtin.command: zpool create otus4 mirror /dev/sdh /dev/sdi
+      tags:
+         - create otus4
+
+
+    - name: Set compression algorithm lzjb to zpool otus1
+      ansible.builtin.command: zfs set compression=lzjb otus1
+      tags:
+         - otus1 compression
+
+    - name: Set compression algorithm lz4 to zpool otus2
+      ansible.builtin.command: zfs set compression=lz4 otus2
+      tags:
+         - otus2 compression
+
+    - name: Set compression algorithm gzip-9 to zpool otus3
+      ansible.builtin.command: zfs set compression=gzip-9 otus3
+      tags:
+         - otus3 compression
+
+    - name: Set compression algorithm zle to zpool otus4
+      ansible.builtin.command: zfs set compression=zle otus4
+      tags:
+         - otus4 compression
+
+
+    - name: Get test file for each zpool 
+      ansible.builtin.shell: for i in {1..4}; do wget -P /otus$i https://gutenberg.org/cache/epub/2600/pg2600.converter.log; done
+      tags:
+         - get test file
+
+
+# Part 2
+
+    - name: Get archived file to import
+      ansible.builtin.shell: wget -O archive.tar.gz --no-check-certificate 'https://drive.usercontent.google.com/download?id=1MvrcEp-WgAQe57aDEzxSRalPAwbNN1Bb&export=download'
+      tags:
+         - get file to import
+
+    - name: Extract files from archive
+      ansible.builtin.command: tar -xzvf archive.tar.gz
+      tags:
+         - extract archive
+
+    #   ansible.builtin.unarchive:
+    #     src: archive.tar.gz
+    #     remote_src: yes
+
+    - name: Import pool naming otus
+      ansible.builtin.command: zpool import -d zpoolexport/ otus
+      tags:
+         - import pool otus
+
+
+#  Part 3
+    - name: Get snapshot file
+      ansible.builtin.shell: wget -O otus_task2.file --no-check-certificate 'https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI&export=download'
+      tags:
+         - get snapshot
+
+    - name: Recover from snapshot 
+      ansible.builtin.shell: zfs receive otus/test@today < otus_task2.file
+      tags:
+         - recover from snapshot 
+
+
+
