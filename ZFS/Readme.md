@@ -27,7 +27,7 @@
 
 1. Определить алгоритм с наилучшим сжатием<br>
 <br>
-# zfs get all | grep compression <br>
+<code># zfs get all | grep compression </code>
 otus             compression           zle                       local<br>
 otus/hometask2   compression           zle                       inherited from otus<br>
 otus/test        compression           zle                       inherited from otus<br>
@@ -37,7 +37,7 @@ otus3            compression           gzip-9                    local<br>
 otus4            compression           zle                       local<br>
 <br>
 
-# zfs get all | grep compressratio | grep -v ref <br>
+<code># zfs get all | grep compressratio | grep -v ref </code>
 otus1            compressratio         1.81x                     -<br>
 otus2            compressratio         2.23x                     -<br>
 otus3            compressratio         3.65x                     -<br>
@@ -48,32 +48,32 @@ otus4            compressratio         1.00x                     -<br>
 
 2. Определить настройки пула.<br>
 <br>
-# zfs get available otus<br>
+<code># zfs get available otus</code>
 NAME  PROPERTY   VALUE  SOURCE<br>
 otus  available  347M   -<br>
 <br>
 Размер 347Мб<br>
 <br>
-# zfs get readonly otus<br>
+<code># zfs get readonly otus</code>
 <br>
 NAME  PROPERTY  VALUE   SOURCE<br>
 otus  readonly  off     default<br>
 <br>
 Чтение/зпись<br>
 <br>
-# zfs get recordsize otus<br>
+<code># zfs get recordsize otus</code>
 NAME  PROPERTY    VALUE    SOURCE<br>
 otus  recordsize  128K     local<br>
 <br>
 recordsize: 128Кб<br>
 <br>
-# zfs get compression otus<br>
+<code># zfs get compression otus</code>
 NAME  PROPERTY     VALUE           SOURCE<br>
 otus  compression  zle             local<br>
 <br>
 Компрессия: zle<br>
 <br>
-# zfs get checksum otus<br>
+<code># zfs get checksum otus</code>
 NAME  PROPERTY  VALUE      SOURCE<br>
 otus  checksum  sha256     local<br>
 <br>
@@ -81,11 +81,10 @@ otus  checksum  sha256     local<br>
 <br>
 
 3. Работа со снапшотом, поиск сообщения от преподавателя<br>
-# find /otus/test -name "secret_message"<br>
+<code># find /otus/test -name "secret_message"</code>
 /otus/test/task1/file_mess/secret_message<br>
 <br>
-# cat /otus/test/task1/file_mess/secret_message<br>
+<code># cat /otus/test/task1/file_mess/secret_message</code><br>
 https://otus.ru/lessons/linux-hl/<br>
 <br>
 Получаем текст ссылки на курс.<br>
-
