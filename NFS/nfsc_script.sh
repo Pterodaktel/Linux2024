@@ -18,3 +18,6 @@ timedatectl set-timezone Europe/Moscow
 #echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts
 #echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts
 #modprobe rpcsec_gss_krb5
+#kadmin.local -q "ktadd nfs/nfsc.nfsnet.local"
+#mount.nfs nfss.nfsnet.local:/srv/kshare /mnt/knfs
+##mount.nfs: Operation not permitted for nfss.nfsnet.local:/srv/kshare on /mnt/knfs
