@@ -40,6 +40,8 @@ timedatectl set-timezone Europe/Moscow
 #kadmin.local -q "addprinc -randkey nfs/nfss.nfsnet.local"
 #kadmin.local -q "addprinc -randkey nfs/nfsc.nfsnet.local"
 ## extract the key into the local keytab:
+#kadmin.local addprinc admin/admin
+#systemctl restart krb5-admin-server
+#systemctl enable krb5-kdc krb5-admin-server
 #kadmin.local -q "ktadd nfs/nfss.nfsnet.local"
-#kadmin.local -q "ktadd nfs/nfsc.nfsnet.local"
 #modprobe rpcsec_gss_krb5
