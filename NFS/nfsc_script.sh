@@ -20,4 +20,4 @@ timedatectl set-timezone Europe/Moscow
 #modprobe rpcsec_gss_krb5
 #kadmin -p admin/admin -q "ktadd nfs/nfsc.nfsnet.local"
 #mount.nfs nfss.nfsnet.local:/srv/kshare /mnt/knfs
-##mount.nfs: Operation not permitted for nfss.nfsnet.local:/srv/kshare on /mnt/knfs
+
