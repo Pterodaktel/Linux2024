@@ -30,48 +30,51 @@
 </code><br>
 <br>
 Открыть порт керберос:<br>
-#ufw allow from any to any port 88<br>
+<code>#ufw allow from any to any port 88</code><br>
 Установка демона синхронизации времени (можно было оставить на совести Virtualbox)<br>
-#apt-get install chrony -y<br>
-#systemctl start chronyd<br>
+<code>#apt-get install chrony -y<br>
+#systemctl start chronyd<br></code>
 <br>
 Настройка разрешения имен:<br>
-#echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
-#echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts<br>
+<code>#echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
+#echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts</code><br>
 <br>
 #modprobe rpcsec_gss_krb5<br>
 Необходимые пакеты MIT Kerberos:<br>
-#apt-get install krb5-kdc krb5-admin-server krb5-user -y<br>
+<code>#apt-get install krb5-kdc krb5-admin-server krb5-user -y<br></code>
 <br>
 Создадим новый realm Kerberos "NFSNET.LOCAL"<br>
-#krb5_newrealm<br>
+<code>#krb5_newrealm<br></code>
 <br>
 Создание принципала администратора<br>
-#kadmin.local addprinc adminuser/admin<br>
-<code># echo "*/admin *" >> /etc/krb5kdc/kadm5.acl</code><br>
-#systemctl restart krb5-admin-server<br>
-#systemctl enable krb5-kdc krb5-admin-server<br>
+<code>#kadmin.local addprinc adminuser/admin<br>
+#echo "*/admin *" >> /etc/krb5kdc/kadm5.acl</code><br>
+<code>#systemctl restart krb5-admin-server<br>
+#systemctl enable krb5-kdc krb5-admin-server<br></code>
 <br>
 Создание принципалов с ключами для машин сервера и клиента:<br>
-#kadmin.local -q "addprinc -randkey nfs/nfss.nfsnet.local"<br>
-#kadmin.local -q "addprinc -randkey nfs/nfsc.nfsnet.local"<br>
+<code>#kadmin.local -q "addprinc -randkey nfs/nfss.nfsnet.local"<br>
+#kadmin.local -q "addprinc -randkey nfs/nfsc.nfsnet.local"<br></code>
 <br>
 Экспорт ключа сервера в локальную таблицу keytab:<br>
-#kadmin.local -q "ktadd nfs/nfss.nfsnet.local"<br>
+<code>#kadmin.local -q "ktadd nfs/nfss.nfsnet.local"<br></code>
 <br>
 В /etc/nfs.conf в [gssd] указываем preferred-realm=NFSNET.LOCAL<br>
 <br>
 
 <h3>Примерный конспект действий на клиенте:</h3>
-
+<code>
 #apt-get install chrony krb5-user -y<br>
 #systemctl start chronyd<br>
 #echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts<br>
 #echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
 #modprobe rpcsec_gss_krb5<br>
-#kadmin -p adminuser/admin -q "ktadd nfs/nfsc.nfsnet.local"<br>
+#kadmin -p adminuser/admin -q "ktadd nfs/nfsc.nfsnet.local"<br></code>
 <br>
-#mount.nfs4 nfss.nfsnet.local:/srv/kshare /mnt/knfs<br>
+<br>
+<code>#mount.nfs4 nfss.nfsnet.local:/srv/kshare /mnt/knfs</code><br>
+
+<br>
 <code>#nfsstat -m<br>
 /mnt/knfs from nfss.nfsnet.local:/srv/kshare<br>
  Flags: rw,relatime,vers=4.2,rsize=262144,wsize=262144,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=krb5p,clientaddr=192.168.11.11,local_lock=none,addr=192.168.11.10
