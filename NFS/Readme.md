@@ -17,8 +17,18 @@
   Некоторые выполнялись интерактивно.
 </p>
 
-<h3>Примерный конспект действий на сервере:</h3>
+<h2>Дополнительное задание</h2>
 
+<h3>Примерный конспект действий на сервере:</h3>
+<br>
+Расшариваем каталог:<br>
+<code>
+#mkdir -p /srv/kshare/upload<br>
+#chown nobody:nogroup /srv/kshare/upload<br>
+#chmod 0777 /srv/kshare/upload<br>
+#echo "/srv/kshare *(rw,sync,no_subtree_check,sec=krb5p)" >> /etc/exports<br>
+</code><br>
+<br>
 Открыть порт керберос:<br>
 #ufw allow from any to any port 88<br>
 Установка демона синхронизации времени (можно было оставить на совести Virtualbox)<br>
