@@ -17,34 +17,39 @@
   Некоторые выполнялись интерактивно.
 </p>
 
-Конспект действий на сервере:
+<h3>Примерный конспект действий на сервере:</h3>
 
-Открыть порт керберос:
-#ufw allow from any to any port 88
-Установка демона синхронизации времени (можно было оставить на совести Virtualbox)
-#apt-get install chrony -y
-#systemctl start chronyd
+Открыть порт керберос:<br>
+#ufw allow from any to any port 88<br>
+Установка демона синхронизации времени (можно было оставить на совести Virtualbox)<br>
+#apt-get install chrony -y<br>
+#systemctl start chronyd<br>
+<br>
+Настройка разрешения имен:<br>
+#echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
+#echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts<br>
+<br>
+Необходимые пакеты MIT Kerberos:<br>
+#apt-get install krb5-kdc krb5-admin-server krb5-user -y<br>
+<br>
+Создадим новый realm Kerberos "NFSNET.LOCAL"<br>
+#krb5_newrealm<br>
+<br>
+Создание принципала администратора<br>
+#kadmin.local addprinc adminuser/admin<br>
+# echo "*/admin *" >> /etc/krb5kdc/kadm5.acl<br>
+#systemctl restart krb5-admin-server<br>
+#systemctl enable krb5-kdc krb5-admin-server<br>
+<br>
+Создание принципалов с ключами для машин сервера и клиента:<br>
+#kadmin.local -q "addprinc -randkey nfs/nfss.nfsnet.local"<br>
+#kadmin.local -q "addprinc -randkey nfs/nfsc.nfsnet.local"<br>
+<br>
+Экспорт ключа сервера в локальную таблицу keytab:<br>
+#kadmin.local -q "ktadd nfs/nfss.nfsnet.local"<br>
+<br>
+В /etc/nfs.conf в [gssd] указываем preferred-realm=NFSNET.LOCAL<br>
+<br>
 
-Настройка разрешения имен:
-#echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts
-#echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts
-
-Необходимые пакеты MIT Kerberos:
-#apt-get install krb5-kdc krb5-admin-server krb5-user -y
-
-Создадим новый realm Kerberos "NFSNET.LOCAL"
-#krb5_newrealm
-
-Создание принципала администратора
-#kadmin.local addprinc adminuser/admin
-
-#systemctl restart krb5-admin-server
-#systemctl enable krb5-kdc krb5-admin-server
-
-Создание принципалов с ключами для машин сервера и клиента:
-#kadmin.local -q "addprinc -randkey nfs/nfss.nfsnet.local"
-#kadmin.local -q "addprinc -randkey nfs/nfsc.nfsnet.local"
-
-Экспорт ключа сервера в локальную таблицу keytab:
-#kadmin.local -q "ktadd nfs/nfss.nfsnet.local"
+<h3>Примерный конспект действий на клиенте:</h3>
 
