@@ -29,6 +29,7 @@
 #echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
 #echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts<br>
 <br>
+#modprobe rpcsec_gss_krb5<br>
 Необходимые пакеты MIT Kerberos:<br>
 #apt-get install krb5-kdc krb5-admin-server krb5-user -y<br>
 <br>
@@ -37,7 +38,7 @@
 <br>
 Создание принципала администратора<br>
 #kadmin.local addprinc adminuser/admin<br>
-# echo "*/admin *" >> /etc/krb5kdc/kadm5.acl<br>
+<code># echo "*/admin *" >> /etc/krb5kdc/kadm5.acl</code><br>
 #systemctl restart krb5-admin-server<br>
 #systemctl enable krb5-kdc krb5-admin-server<br>
 <br>
@@ -53,3 +54,17 @@
 
 <h3>Примерный конспект действий на клиенте:</h3>
 
+#apt-get install chrony krb5-user -y<br>
+#systemctl start chronyd<br>
+#echo "192.168.11.11 nfsc.nfsnet.local nfsc" >> /etc/hosts<br>
+#echo "192.168.11.10 nfss.nfsnet.local nfss" >> /etc/hosts<br>
+#modprobe rpcsec_gss_krb5<br>
+#kadmin -p admin/admin -q "ktadd nfs/nfsc.nfsnet.local"<br>
+<br>
+#mount.nfs4 nfss.nfsnet.local:/srv/kshare /mnt/knfs<br>
+
+<code>#nfsstat -m<br>
+/mnt/knfs from nfss.nfsnet.local:/srv/kshare<br>
+ Flags: rw,relatime,vers=4.2,rsize=262144,wsize=262144,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=krb5p,clientaddr=192.168.11.11,local_lock=none,addr=192.168.11.10
+</code>
+<br>
