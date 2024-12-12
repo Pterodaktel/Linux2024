@@ -1,0 +1,2 @@
+/srv/share 192.168.11.11/32(rw,sync,no_subtree_check,root_squash)
+/srv/kshare *(rw,sync,no_subtree_check,sec=krb5p)
