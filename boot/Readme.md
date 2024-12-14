@@ -37,5 +37,23 @@ Box: elabpro/redos-7<br>
   Выходим из chroot командой exit и перезагружаемся.<br>
 </p>
 
+<h3>Переименование VG</h3>
+<p>Cмотрим, что у нас имеется.</p>
+<code>
+# vgs <br>
+VG       #PV #LV #SN Attr   VSize   VFree <br>
+ro_redos   1   2   0 wz--n- <19,00g    0 <br>
+</code>
+
+Переименовываем volume group ro_redos: <br>
+<code># vgrename ro_redosg vg_redos</code> <br>
+
+Далее в /etc/fstab меняем вхождения /dev/mapper/ro_redos-root на /dev/mapper/vg_redos-root. <br>
+В файле переменных загрузчика /etc/default/grub заменяем вхождения ro_redos на vg_redos <br>
+
+После этого reboot и в меню загрузчика аналогично заменил в выбираемой строке ro_redos на vg_redos  <br>
+Далее, когда система загрузилась, осталось реконфигурироваться загрузчик: <br>
+<code># grub2-mkconfig</code> <br>
+После этого система грузится сама с переименованным Volue Group.<br>
 
 
