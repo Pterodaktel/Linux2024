@@ -1,5 +1,6 @@
 <h1>Systemd</h1>
-<p>Vagrant box: ubuntu/22.04</p>
+<p>Vagrant mirror: https://vagrant.elab.pro<br>
+Vagrant box: ubuntu/22.04</p>
 
 <nl>
 <li>Написать service, который будет раз в 30 секунд мониторить лог на предмет наличия ключевого слова (файл лога и ключевое слово должны задаваться в /etc/default).</li>
