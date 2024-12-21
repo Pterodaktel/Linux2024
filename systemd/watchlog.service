@@ -1,0 +1,10 @@
+[Unit]
+Description=My watchlog service
+
+[Service]
+Type=oneshot
+#Type=simple
+EnvironmentFile=/etc/default/watchlog
+ExecStart=/opt/watchlog.sh $WORD $LOG
+#ExecStart=/opt/watchlog.sh ALERT /var/log/watchlog.log
+#ExecStart=echo "HI there!"
