@@ -37,10 +37,10 @@ echo "Обрабатываемый файл: $LOG_FILE"
 echo "Период c `date -d \"1 hour ago\" +%H:%S` до `date +%H:%S`" >&3
 
 echo "IP адреса (топ $LIMIT):" >&3
-grep $DATE_PATTERN $LOG_FILE | awk '{print $1}' |sort |uniq -c |sort -nr |tail -n $LIMIT | awk '{print $2 " - "  $1}' >&3
+grep $DATE_PATTERN $LOG_FILE | awk '{print $1}' |sort |uniq -c |sort -nr |head -n $LIMIT | awk '{print $2 " - "  $1}' >&3
 
 echo "Запрашиваемые адреса URL (топ $LIMIT):" >&3
-grep $DATE_PATTERN $LOG_FILE | awk '{print $7}' |sort |uniq -c |sort -nr |tail -n $LIMIT | awk '{print $2 " - " $1}' >&3
+grep $DATE_PATTERN $LOG_FILE | awk '{print $7}' |sort |uniq -c |sort -nr |head -n $LIMIT | awk '{print $2 " - " $1}' >&3
 
 echo "Коды ответа:" >&3
 grep $DATE_PATTERN $LOG_FILE | awk '{print $9}' |sort |uniq -c  | awk '{print $2 " - " $1}' >&3
