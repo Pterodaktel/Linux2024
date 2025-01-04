@@ -1,0 +1,15 @@
+[Thu Jan 02 14:28:01.685562 2025] [lbmethod_heartbeat:notice] [pid 1490] AH02282: No slotmem from mod_heartmonitor
+[Thu Jan 02 14:28:01.771731 2025] [mpm_prefork:notice] [pid 1490] AH00163: Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips mod_fcgid/2.3.9 PHP/7.4.33 configured -- resuming normal operations
+[Thu Jan 02 14:28:01.771743 2025] [core:notice] [pid 1490] AH00094: Command line: '/usr/sbin/httpd -D FOREGROUND'
+[Fri Jan 03 13:20:02.308824 2025] [autoindex:error] [pid 8929] [client 127.0.0.1:41514] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html,index.php) found, and server-generated directory index forbidden by Options directive
+[Fri Jan 03 13:40:01.059571 2025] [mpm_prefork:notice] [pid 1490] AH00170: caught SIGWINCH, shutting down gracefully
+[Fri Jan 03 13:43:03.723573 2025] [core:notice] [pid 1479] SELinux policy enabled; httpd running as context system_u:system_r:httpd_t:s0
+[Fri Jan 03 13:43:03.730355 2025] [suexec:notice] [pid 1479] AH01232: suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+[Fri Jan 03 13:43:03.775574 2025] [lbmethod_heartbeat:notice] [pid 1479] AH02282: No slotmem from mod_heartmonitor
+[Fri Jan 03 13:43:04.074052 2025] [mpm_prefork:notice] [pid 1479] AH00163: Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips mod_fcgid/2.3.9 PHP/7.4.33 configured -- resuming normal operations
+[Fri Jan 03 13:43:04.074108 2025] [core:notice] [pid 1479] AH00094: Command line: '/usr/sbin/httpd -D FOREGROUND'
+[Fri Jan 03 14:23:18.811539 2025] [autoindex:error] [pid 1819] [client 127.0.0.1:41734] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html,index.php) found, and server-generated directory index forbidden by Options directive
+[Fri Jan 03 17:31:31.744812 2025] [autoindex:error] [pid 1822] [client 127.0.0.1:41842] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html,index.php) found, and server-generated directory index forbidden by Options directive
+[Sat Jan 04 16:15:33.063949 2025] [autoindex:error] [pid 1821] [client 127.0.0.1:41944] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html,index.php) found, and server-generated directory index forbidden by Options directive
+[Sat Jan 04 13:30:22.931729 2025] [access_compat:error] [pid 1893445] [client 20.192.23.207:0] AH01797: client denied by server configuration: /usr/home/html/admin/controller, referer: binance.com
+[Sat Jan 04 14:28:03.709526 2025] [php7:notice] [pid 1905286] [client 40.77.167.44:0] PHP Notice:  Undefined index: title in /home/html/index.php on line 295
