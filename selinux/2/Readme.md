@@ -48,8 +48,8 @@ update failed: SERVFAIL
 
 <h3>На сервере:</h3>
 
-<p>Посмотрим лог</p>
-<code># journalctl -t setroubleshoot</code>
+<p>Посмотрим лог на предмет ошибок SELinux для bind</p>
+<code># journalctl -t setroubleshoot -u named.service</code>
 <pre>....
 Jan 19 12:10:47 ns01 setroubleshoot[3684]: SELinux is preventing /usr/sbin/named from write access on the directory dynamic. For complete SELinux messages run: sealert -l a6a1da5f-e866-4203-8e08-eb2aa2d5e53c
 Jan 19 12:10:47 ns01 setroubleshoot[3684]: SELinux is preventing /usr/sbin/named from write access on the directory dynamic.
@@ -64,8 +64,11 @@ Jan 19 12:10:47 ns01 setroubleshoot[3684]: SELinux is preventing /usr/sbin/named
                                            # ausearch -c 'isc-net-0001' --raw | audit2allow -M my-iscnet0001
                                            # semodule -X 300 -i my-iscnet0001.pp
 </pre>
-
-
+<p>
+   Видим, что SELinux не разрешает запись процессу bind в каталог <b>dynamic</b>.<br>
+   Сразу предлагается решение в виде создания дополнительного модуля.
+</p>
+<p>Изучим проблему детальнее.</p>
 <code># sealert -l a6a1da5f-e866-4203-8e08-eb2aa2d5e53c</code>
 <pre>
 SELinux is preventing /usr/sbin/named from write access on the directory dynamic.
@@ -114,9 +117,6 @@ type=SYSCALL msg=audit(1737288647.108:638): arch=x86_64 syscall=openat success=n
 Hash: isc-net-0001,named_t,named_conf_t,dir,write
 </pre>
 
-
-<code># grep named /var/log/audit/audit.log | audit2why</code>
-<br>
 <code># grep 1737220094.862:569 /var/log/audit/audit.log | audit2why</code>
 <pre>
 type=AVC msg=audit(1737220094.862:569): avc:  denied  { write } for  pid=829 comm="isc-net-0001" name="dynamic" dev="sda4" ino=50420990 scontext=system_u:system_r:named_t:s0 tcontext=unconfined_u:object_r:named_conf_t:s0 tclass=dir permissive=0
@@ -128,7 +128,7 @@ type=AVC msg=audit(1737220094.862:569): avc:  denied  { write } for  pid=829 com
 </pre>
 
 
-
+<p>Посмотрим конфигурацию bind для обновляемой ранее зоны</p>
 <code># less /etc/named.conf</code>
 <pre>
 ...
@@ -178,7 +178,12 @@ allow named_t named_zone_t:lnk_file { append create ioctl link lock rename setat
 allow named_t named_zone_t:lnk_file { getattr read };
 </pre>
 
+<p>Назначим метку named_zone_t каталогу /etc/named/dynamic</p>
 <code># chcon -R -t named_zone_t /etc/named/dynamic</code>
+
+
+<h3>На клиенте:</h3>
+
 <pre>
 $ nsupdate -k /etc/named.zonetransfer.key
 > server 192.168.50.10
