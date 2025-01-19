@@ -1,7 +1,12 @@
 <h1>2.	Обеспечение работоспособности приложения при включенном SELinux</h1>
 
-<p>Код стенда: https://github.com/Nickmob/vagrant_selinux_dns_problems.git</p>
+<p>
+    Код стенда: https://github.com/Nickmob/vagrant_selinux_dns_problems.git<br>
+Vagrant box: Almalinux/9<br>
+ Версия бокса: 9.5.20241203    
+</p>
 
+<p>На клиенте</p>
 <pre>
 $ dig @192.168.50.10 ns01.dns.lab
 
