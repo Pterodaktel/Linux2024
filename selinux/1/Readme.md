@@ -7,7 +7,10 @@
 <li>формирование и установка модуля SELinux.</li>
 </ul>
 
-<p>Vagrant box: Almalinux/9</p>
+<p>Vagrant box: Almalinux/9<br>
+ Версия бокса: 9.5.20241203<br>
+Исходный код стенда: https://github.com/Nickmob/vagrant_selinux
+</p>
 
 <code># systemctl status nginx</code>
 <pre>     
