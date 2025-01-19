@@ -6,7 +6,8 @@ Vagrant box: Almalinux/9<br>
  Версия бокса: 9.5.20241203    
 </p>
 
-<p>На клиенте</p>
+<h3>На клиенте:</h3>
+<p>Тестовый запрос к серверу:</p>
 <pre>
 $ dig @192.168.50.10 ns01.dns.lab
 
@@ -32,6 +33,7 @@ ns01.dns.lab.           3600    IN      A       192.168.50.10
 ;; MSG SIZE  rcvd: 85
 </pre>
 
+<p>Попробуем внести изменения в зону:</p>
 <pre>
 $ nsupdate -k /etc/named.zonetransfer.key
 > server 192.168.50.10
@@ -41,28 +43,12 @@ $ nsupdate -k /etc/named.zonetransfer.key
 update failed: SERVFAIL
 > quit
 </pre>
+<p>Попытка не удалась: update failed: SERVFAIL</p>
 
 
+<h3>На сервере:</h3>
 
-
-<code># less /etc/named.conf</code>
-<pre>
-...
-// labs ddns zone
-    zone "ddns.lab" {
-        type master;
-        allow-transfer { key "zonetransfer.key"; };
-        allow-update { key "zonetransfer.key"; };
-        file "/etc/named/dynamic/named.ddns.lab.view1";
-    };
-...
-</pre>
-
-
-
-
-
-
+<p>Посмотрим лог</p>
 <code># journalctl -t setroubleshoot</code>
 <pre>....
 Jan 19 12:10:47 ns01 setroubleshoot[3684]: SELinux is preventing /usr/sbin/named from write access on the directory dynamic. For complete SELinux messages run: sealert -l a6a1da5f-e866-4203-8e08-eb2aa2d5e53c
@@ -140,6 +126,23 @@ type=AVC msg=audit(1737220094.862:569): avc:  denied  { write } for  pid=829 com
 
                 You can use audit2allow to generate a loadable module to allow this access.
 </pre>
+
+
+
+<code># less /etc/named.conf</code>
+<pre>
+...
+// labs ddns zone
+    zone "ddns.lab" {
+        type master;
+        allow-transfer { key "zonetransfer.key"; };
+        allow-update { key "zonetransfer.key"; };
+        file "/etc/named/dynamic/named.ddns.lab.view1";
+    };
+...
+</pre>
+
+
 
 <code>ls -alZ /var/named/named.localhost</code>
 <pre>-rw-r-----. 1 root named system_u:object_r:named_zone_t:s0 152 Oct  3 05:26 /var/named/named.localhost</pre>
