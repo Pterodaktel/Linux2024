@@ -142,10 +142,7 @@ type=AVC msg=audit(1737220094.862:569): avc:  denied  { write } for  pid=829 com
 ...
 </pre>
 
-
-
-<code>ls -alZ /var/named/named.localhost</code>
-<pre>-rw-r-----. 1 root named system_u:object_r:named_zone_t:s0 152 Oct  3 05:26 /var/named/named.localhost</pre>
+<p>Мы видим, что зона расположена в каталоге /etc/named/dynamic</p>
 
 <pre># ls -laZ /etc/named
 total 28
@@ -159,6 +156,12 @@ drw-rwx---.  2 root named unconfined_u:object_r:named_conf_t:s0   56 Jan 18 16:4
 </pre>
 
 
+<p></p>
+<code>ls -alZ /var/named/named.localhost</code>
+<pre>-rw-r-----. 1 root named system_u:object_r:named_zone_t:s0 152 Oct  3 05:26 /var/named/named.localhost</pre>
+
+
+<p>Посмотрим правила для меток named_conf_t и named_zone_t</p>
 <code># sesearch -A -s named_t | grep named_conf_t</code>
 <pre>
 allow named_t named_conf_t:dir { getattr ioctl lock open read search };
