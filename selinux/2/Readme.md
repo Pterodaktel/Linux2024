@@ -80,8 +80,8 @@ Then you should report this as a bug.
 You can generate a local policy module to allow this access.
 Do
 allow this access for now by executing:
-# ausearch -c 'isc-net-0001' --raw | audit2allow -M my-iscnet0001
-# semodule -X 300 -i my-iscnet0001.pp
+ ausearch -c 'isc-net-0001' --raw | audit2allow -M my-iscnet0001
+ semodule -X 300 -i my-iscnet0001.pp
 
 
 Additional Information:
@@ -155,12 +155,27 @@ drw-rwx---.  2 root named unconfined_u:object_r:named_conf_t:s0   56 Jan 18 16:4
 -rw-rw----.  1 root named system_u:object_r:named_conf_t:s0      676 Jan 18 16:45 named.newdns.lab
 </pre>
 
-<p>Мы видим, что файлы в этом каталоге промаркированы типом named_conf_t. Но, пользователь метки для каталога dynamic отличается.</p>
+<p>
+    Мы видим, что файлы в этом каталоге промаркированы типом named_conf_t.<br>
+    Но, пользователь метки для каталога dynamic отличается. <br>
+    Посмотрим метки каталога /var/named<br>
+</p>
 
-<p></p>
-<code>ls -alZ /var/named/named.localhost</code>
-<pre>-rw-r-----. 1 root named system_u:object_r:named_zone_t:s0 152 Oct  3 05:26 /var/named/named.localhost</pre>
+<code># ll -Z /var/named</code>
+<pre>total 16
+drwxrwx---. 2 named named system_u:object_r:named_cache_t:s0   23 Jan 18 16:45 data
+drwxrwx---. 2 named named system_u:object_r:named_cache_t:s0   94 Jan 18 16:46 dynamic
+-rw-r-----. 1 root  named system_u:object_r:named_conf_t:s0  2112 Oct  3 05:26 named.ca
+-rw-r-----. 1 root  named system_u:object_r:named_zone_t:s0   152 Oct  3 05:26 named.empty
+-rw-r-----. 1 root  named system_u:object_r:named_zone_t:s0   152 Oct  3 05:26 named.localhost
+-rw-r-----. 1 root  named system_u:object_r:named_zone_t:s0   168 Oct  3 05:26 named.loopback
+drwxrwx---. 2 named named system_u:object_r:named_cache_t:s0    6 Oct  3 05:25 slaves
+</pre>
 
+<p>
+    Файл зоны localhost здесь имеет тип named_zone_t.<br>
+    Также здесь присутствует свой каталог dynamic с меткой named_cache_t.
+</p>
 
 <p>Посмотрим правила для меток named_conf_t и named_zone_t</p>
 <code># sesearch -A -s named_t | grep named_conf_t</code>
@@ -181,6 +196,11 @@ allow named_t named_zone_t:file { getattr ioctl lock map open read };
 allow named_t named_zone_t:lnk_file { append create ioctl link lock rename setattr unlink watch watch_reads write }; [ named_write_master_zones ]:True
 allow named_t named_zone_t:lnk_file { getattr read };
 </pre>
+
+<p>
+   Видим, что каталоги домена named_conf_t доступны только на чтение. Для named_zone_t запись доступна.<br>
+   Напрашивается вывод, что домен named_conf_t предназначен для чтения файлов конфигурации, а named_zone_t для управления зонами DNS.
+</p>
 
 <p>Назначим метку named_zone_t каталогу /etc/named/dynamic</p>
 <code># chcon -R -t named_zone_t /etc/named/dynamic</code>
