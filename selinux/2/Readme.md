@@ -142,7 +142,7 @@ type=AVC msg=audit(1737220094.862:569): avc:  denied  { write } for  pid=829 com
 ...
 </pre>
 
-<p>Мы видим, что зона расположена в каталоге /etc/named/dynamic</p>
+<p>Мы видим, что зона расположена в каталоге /etc/named/dynamic. Посмотрим метки в какталоге /etc/named/</p>
 
 <pre># ls -laZ /etc/named
 total 28
@@ -155,6 +155,7 @@ drw-rwx---.  2 root named unconfined_u:object_r:named_conf_t:s0   56 Jan 18 16:4
 -rw-rw----.  1 root named system_u:object_r:named_conf_t:s0      676 Jan 18 16:45 named.newdns.lab
 </pre>
 
+<p>Мы видим, что файлы в этом каталоге промаркированы типом named_conf_t. Но, пользователь метки для каталога dynamic отличается.</p>
 
 <p></p>
 <code>ls -alZ /var/named/named.localhost</code>
