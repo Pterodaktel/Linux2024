@@ -298,3 +298,39 @@ Relabeled /var/named/dynamic/named.ddns.lab.view1 from system_u:object_r:named_z
 Relabeled /var/named/dynamic/named.ddns.lab.view1.jnl from system_u:object_r:named_zone_t:s0 to system_u:object_r:named_cache_t:s0
 </pre>
 <code># systemctl start named</code>
+
+<h3>На клиенте:</h3>
+<p>Убеждаемся, что все работает</p>
+<code>$ nsupdate -k /etc/named.zonetransfer.key</code>
+<pre>
+> server 192.168.50.10
+> zone ddns.lab
+> update add www.ddns.lab. 60 A 192.168.50.12
+> send
+> quit
+</pre>
+
+<code>$ dig @192.168.50.10 www.ddns.lab</code>
+<pre>
+; <<>> DiG 9.16.23-RH <<>> @192.168.50.10 www.ddns.lab
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 51932
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: cb9026e733d284da01000000678fe7625f6ae84a8072bfb0 (good)
+;; QUESTION SECTION:
+;www.ddns.lab.                  IN      A
+
+;; ANSWER SECTION:
+www.ddns.lab.           60      IN      A       192.168.50.12
+www.ddns.lab.           60      IN      A       192.168.50.15
+
+;; Query time: 2 msec
+;; SERVER: 192.168.50.10#53(192.168.50.10)
+;; WHEN: Tue Jan 21 18:28:50 UTC 2025
+;; MSG SIZE  rcvd: 101
+</pre>
