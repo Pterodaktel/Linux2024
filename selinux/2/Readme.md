@@ -216,6 +216,7 @@ $ nsupdate -k /etc/named.zonetransfer.key
 > send
 </pre>
 
+<p>Все сработало. Проверим:</p>
 
 <code>$ dig @192.168.50.10 www.ddns.lab</code>
 <pre>
@@ -240,9 +241,60 @@ www.ddns.lab.           60      IN      A       192.168.50.15
 ;; WHEN: Sun Jan 19 15:23:59 UTC 2025
 ;; MSG SIZE  rcvd: 85
 </pre>
+<p>
+    Все врооде бы ок. Но есть один момент. Все это будет работать до тех пор, пока наш каталог /etc/named/dynamic не окажется вдруг перемаркирован.
+    Такую ситуацию следовало бы предусмотреть. По идее, если нам, скажем, лень разбираться в назначениях каталогов, мы могли бы автоматически создать модуль SElinux.
+    Посмотрим этот вариант.
+</p>
+        
+<h3>На сервере:</h3>
 
+<code># grep 1737290119.647:647 /var/log/audit/audit.log | audit2allow -M named_module</code><br>
+<code># cat ./named_module.te</code>
+<pre>
+module named_module 1.0;
 
+require {
+        type named_conf_t;
+        type named_t;
+        class dir write;
+}
 
+#============= named_t ==============
+allow named_t named_conf_t:dir write;
+</pre>
+<p>
+    Судя по тексту сгенерированного модуля, нам предлагается разрешить домену named_t записывать в каталоги с меткой named_conf_t.
+    Это представляется не лучшим решением, т.к. мы несколько нарушаем этим модель безопасности дистрибутива.
+</p>
 
+<p>
+    Если мне не изменяет память, когда-то файлы зон bind хранились в /etc/named/. 
+    В какойто момент они "переехали" в /var/named/. Для динамически обновляемых зон служит каталог /var/named/dynamic/.
+    Вероятно, кто-то по старой памяти положил этот каталог в /etc.
+    Наиболее правильным вариантом представляется перенести файлы нашей зоны туда, где это предусмотрено дистрибутивом.
+</p>
 
+<p>Проверим правила для метки интересующего нас каталога.</p>
+<code># sesearch -A -s named_t | grep named_cache_t </code>
+<pre>
+allow named_t named_cache_t:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write };
+allow named_t named_cache_t:file { append create getattr ioctl link lock map open read rename setattr unlink watch watch_reads write };
+allow named_t named_cache_t:lnk_file { append create getattr ioctl link lock read rename setattr unlink watch watch_reads write };
+</pre>
 
+<p>Права на запись есть. Остановим bind.</p>
+<code># systemctl stop named</code>
+
+<p>
+    После этого в файле /etc/named.conf изменим пути к файлам нашей зоны с /etc/named/dynamic на /var/named/dynamic/.
+    Затем перенесем наши файлы, перемаркируем каталог и запустим bind.
+</p>
+<code># mv /etc/named/dynamic/* /var/named/dynamic</code>
+<code>restorecon -R -v /var/named/dynamic</code>
+<pre>
+Relabeled /var/named/dynamic/named.ddns.lab from system_u:object_r:named_zone_t:s0 to system_u:object_r:named_cache_t:s0
+Relabeled /var/named/dynamic/named.ddns.lab.view1 from system_u:object_r:named_zone_t:s0 to system_u:object_r:named_cache_t:s0
+Relabeled /var/named/dynamic/named.ddns.lab.view1.jnl from system_u:object_r:named_zone_t:s0 to system_u:object_r:named_cache_t:s0
+</pre>
+<code># systemctl start named</code>
