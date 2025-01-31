@@ -10,4 +10,6 @@
   Тема для redmine: https://github.com/farend/redmine_theme_farend_bleuclair#demo
 </p>
 
-<p>Запуск: docker compose up</p>
+
+<p>Подготовка каталогов: <code>make_dirs.sh</code></p>
+<p>Запуск: <code>docker compose up</code></p>
