@@ -1,0 +1,38 @@
+services:
+
+  redmine:
+    build: .
+    restart: always
+    ports:
+      - 8080:3000
+    volumes:
+      - files_data:/usr/src/redmine/files
+
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: example
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: redmine
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  files_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./redmine_files
+      o: bind
+
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./redmine_db
+      o: bind
