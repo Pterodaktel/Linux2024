@@ -1,2 +1,23 @@
 <h1>Аутентификация пользователей. Работа с PAM</h1>
 <p>Запретить всем пользователям кроме группы admin логин в выходные (суббота и воскресенье)</p>
+
+Vagrant mirror: https://vagrant.elab.pro<br>
+Vagrant box: ubuntu/22.04
+
+
+
+
+<p>Результат проверки:</p>
+<code>tail /var/log/auth.log</code>
+<pre>
+Feb  9 18:03:37 pam sshd[1748]: pam_exec(sshd:auth): /usr/local/bin/login.sh failed: exit code 1
+Feb  9 18:03:40 pam sshd[1748]: Failed password for otus from 192.168.11.50 port 36138 ssh2
+Feb  9 18:03:43 pam sshd[1748]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.11.50  user=otus
+Feb  9 18:03:46 pam sshd[1748]: Failed password for otus from 192.168.11.50 port 36138 ssh2
+Feb  9 18:03:47 pam sshd[1748]: Connection closed by authenticating user otus 192.168.11.50 port 36138 [preauth]
+Feb  9 18:04:12 pam sshd[1799]: pam_exec(sshd:auth): Calling /usr/local/bin/login.sh ...
+Feb  9 18:04:12 pam sshd[1787]: Accepted password for otusadm from 192.168.11.50 port 43324 ssh2
+Feb  9 18:04:12 pam sshd[1787]: pam_unix(sshd:session): session opened for user otusadm(uid=1002) by (uid=0)
+Feb  9 18:04:12 pam systemd-logind[640]: New session 16 of user otusadm.
+Feb  9 18:04:12 pam systemd: pam_unix(systemd-user:session): session opened for user otusadm(uid=1002) by (uid=0)
+</pre>
