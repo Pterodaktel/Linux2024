@@ -4,8 +4,9 @@
 Vagrant mirror: https://vagrant.elab.pro<br>
 Vagrant box: ubuntu/22.04
 
-
-
+<p>Сщзданы пользователи otus и otusadm. Второй добавлен в созданную группу admin</p>
+<p>Скрипт проверки помещен в /usr/local/bin/login.sh</p>
+<p>В файл /etc/pam.d/sshd добавлен строчка <code>auth required pam_exec.so debug /usr/local/bin/login.sh</code></p>
 
 <p>Результат проверки:</p>
 <code>tail /var/log/auth.log</code>
