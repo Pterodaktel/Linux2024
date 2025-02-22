@@ -19,7 +19,7 @@
 
 <h3>Проверка</h3>
 
-<code></code># aureport -i -k</code>
+<code># aureport -i -k</code>
 <pre>
 Key Report
 ===============================================
