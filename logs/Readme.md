@@ -11,6 +11,7 @@
 Все логи с nginx должны уходить на удаленный сервер (локально только критичные).
 Логи аудита должны также уходить на удаленную систему.  
 </p>
+<h3>Проверка</h3>
 
 <code># ll /var/log/rsyslog</code>
 <pre>
@@ -22,6 +23,7 @@ drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:17 other/
 drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:11 web/
 </pre>
 
+<p>Все логи с машины other отправляются на машину log.</p>
 <code># ll /var/log/rsyslog/other</code>
 <pre>
 total 48
