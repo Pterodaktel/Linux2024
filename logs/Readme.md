@@ -72,6 +72,27 @@ drwxr-xr-x 5 syslog syslog  4096 Feb 22 13:57 ../
 -rw-r----- 1 syslog adm      208 Feb 22 14:11 nginx_error.log
 </pre>
 
+<code># cat /var/log/rsyslog/web/nginx_error.log</code>
+<pre>
+Feb 22 14:11:26 web nginx_error: 2025/02/22 14:11:26 [error] 3967#3967: *3 directory index of "/var/www/html/" is forbidden, client: 192.168.11.50, server: _, request: "GET / HTTP/1.1", host: "192.168.11.10"
+Feb 22 14:50:51 web nginx_error: 2025/02/22 14:50:51 [error] 3967#3967: *7 directory index of "/var/www/html/" is forbidden, client: 192.168.11.50, server: _, request: "GET / HTTP/1.1", host: "192.168.11.10"
+Feb 22 14:56:47 web nginx_error: 2025/02/22 14:56:47 [error] 4736#4736: *1 directory index of "/var/www/html/" is forbidden, client: 192.168.11.50, server: _, request: "GET / HTTP/1.1", host: "192.168.11.10"
+</pre>
+
+<code># cat /var/log/rsyslog/web/nginx_access.log</code>
+<pre>
+Feb 22 14:08:49 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:08:49 +0300] "GET / HTTP/1.1" 200 396 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:08:49 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:08:49 +0300] "GET /favicon.ico HTTP/1.1" 404 197 "http://192.168.11.10/" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:08:52 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:08:52 +0300] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:11:26 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:11:26 +0300] "GET / HTTP/1.1" 403 196 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:20:36 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:20:36 +0300] "GET /4544.htm HTTP/1.1" 404 197 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:50:27 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:50:27 +0300] "GET /4544.htm HTTP/1.1" 404 197 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:50:51 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:50:51 +0300] "GET / HTTP/1.1" 403 196 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:56:47 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:56:47 +0300] "GET / HTTP/1.1" 403 196 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:57:49 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:57:49 +0300] "GET / HTTP/1.1" 200 396 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+Feb 22 14:57:50 web nginx_access: 192.168.11.50 - - [22/Feb/2025:14:57:50 +0300] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64; Chromium) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+</pre>
+
 <code># tail /var/log/rsyslog/web/audit.log</code>
 <pre>
 Feb 22 14:25:25 web audit type=SYSCALL msg=audit(1740223525.615:103): arch=c000003e syscall=257 success=yes exit=16 a0=ffffff9c a1=5594339bb340 a2=241 a3=81a4 items=2 ppid=4615 pid=4617 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=4 comm="mcedit" exe="/usr/bin/mc" subj=unconfined key="nginx_configs"#035ARCH=x86_64 SYSCALL=openat AUID="vagrant" UID="root" GID="root" EUID="root" SUID="root" FSUID="root" EGID="root" SGID="root" FSGID="root"
