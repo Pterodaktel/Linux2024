@@ -11,7 +11,28 @@
 Все логи с nginx должны уходить на удаленный сервер (локально только критичные).
 Логи аудита должны также уходить на удаленную систему.  
 </p>
+
+<p>Для аудита изменений каталога конфигурации nginx используется правило "-w /etc/nginx/ -p wa -k nginx_configs"<br>
+Оно вставляется в файл /etc/audit/rules.d/audit.rules<br>                                                                                                                  
+Если нужно временно применить это правило, используется команда "auditctl -w /etc/nginx/ -p wa -k nginx_configs"
+</p>
+
 <h3>Проверка</h3>
+
+<code></code># aureport -i -k</code>
+<pre>
+Key Report
+===============================================
+# date time key success exe auid event
+===============================================
+1. 02/22/25 14:03:41 nginx_configs yes /usr/sbin/auditctl unset 47
+2. 02/22/25 14:25:22 nginx_configs yes /usr/bin/mc vagrant 100
+3. 02/22/25 14:25:25 nginx_configs yes /usr/bin/mc vagrant 101
+4. 02/22/25 14:25:25 nginx_configs yes /usr/bin/mc vagrant 102
+5. 02/22/25 14:25:25 nginx_configs yes /usr/bin/mc vagrant 103
+6. 02/22/25 14:25:25 nginx_configs yes /usr/bin/mc vagrant 104
+</pre>
+
 
 <code># ll /var/log/rsyslog</code>
 <pre>
