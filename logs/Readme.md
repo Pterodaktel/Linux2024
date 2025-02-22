@@ -62,6 +62,8 @@ drwxr-xr-x 5 syslog syslog 4096 Feb 22 13:57 ../
 -rw-r----- 1 syslog adm    3841 Feb 22 14:07 systemd.log
 </pre>
 
+<p>Логи с машины web</p>
+
 <code># ll /var/log/rsyslog/web</code>
 <pre>
 total 76
