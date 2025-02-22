@@ -17,9 +17,9 @@ Vagrant.configure(2) do |config|
 	  #cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
 	  timedatectl set-timezone Europe/Moscow
           apt-get update
-          # ñèíõðîíèçàöèÿ âðåìåíè ñ óäàëåííûì èñòî÷íèêîì 
+          # ÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ Ñ ÑƒÐ´Ð°Ð»ÐµÐ½Ð½Ñ‹Ð¼ Ð¸ÑÑ‚Ð¾Ñ‡Ð½Ð¸ÐºÐ¾Ð¼ 
 	  apt-get install chrony -y
-          # íàñòðîéêà öåíòðàëèçîâàííîãî ñåðâåðà ñáîðà ëîãîâ 
+          # Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ñ†ÐµÐ½Ñ‚Ñ€Ð°Ð»Ð¸Ð·Ð¾Ð²Ð°Ð½Ð½Ð¾Ð³Ð¾ ÑÐµÑ€Ð²ÐµÑ€Ð° ÑÐ±Ð¾Ñ€Ð° Ð»Ð¾Ð³Ð¾Ð² 
 	  cat /vagrant/rsyslog.conf > /etc/rsyslog.conf
 	  systemctl restart rsyslog
     SHELL
@@ -36,9 +36,9 @@ Vagrant.configure(2) do |config|
 	  apt-get update
 	  apt-get install chrony nginx auditd -y
 	  cat /vagrant/nginx.conf > /etc/nginx/nginx.conf
-          # ëîãè àóäèòà íà óäàëåííûé ñåðâåð ëîãîâ 
+          # Ð»Ð¾Ð³Ð¸ Ð°ÑƒÐ´Ð¸Ñ‚Ð° Ð½Ð° ÑƒÐ´Ð°Ð»ÐµÐ½Ð½Ñ‹Ð¹ ÑÐµÑ€Ð²ÐµÑ€ Ð»Ð¾Ð³Ð¾Ð² 
           cat /vagrant/30-auditd.conf > /etc/rsyslog.d/30-auditd.conf
-          # ïðàâèëà àóäèòà 
+          # Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð° Ð°ÑƒÐ´Ð¸Ñ‚Ð° 
           cat /vagrant/audit.rules > /etc/audit/rules.d/audit.rules
 	  systemctl restart nginx rsyslog auditd
     SHELL
@@ -54,7 +54,7 @@ Vagrant.configure(2) do |config|
 	  timedatectl set-timezone Europe/Moscow
 	  apt-get update
 	  apt-get install chrony -y
-          # îòïðàâêà âñåõ ëîãîâ íà ñåðâåð
+          # Ð¾Ñ‚Ð¿Ñ€Ð°Ð²ÐºÐ° Ð²ÑÐµÑ… Ð»Ð¾Ð³Ð¾Ð² Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€
 	  echo '*.* @@192.168.11.15:514' >> /etc/rsyslog.d/50-default.conf
           systemctl restart rsyslog
     SHELL
