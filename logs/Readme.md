@@ -22,6 +22,23 @@ drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:17 other/
 drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:11 web/
 </pre>
 
+<code># ll /var/log/rsyslog/other</code>
+<pre>
+total 48
+drwxr-xr-x 2 syslog syslog 4096 Feb 22 14:17 ./
+drwxr-xr-x 5 syslog syslog 4096 Feb 22 13:57 ../
+-rw-r----- 1 syslog adm     286 Feb 22 14:17 CRON.log
+-rw-r----- 1 syslog adm     172 Feb 22 13:37 chronyd.log
+-rw-r----- 1 syslog adm     353 Feb 22 13:42 dbus-daemon.log
+-rw-r----- 1 syslog adm     322 Feb 22 13:37 multipath.log
+-rw-r----- 1 syslog adm    1792 Feb 22 13:37 multipathd.log
+-rw-r----- 1 syslog adm    1338 Feb 22 14:07 rsyslogd.log
+-rw-r----- 1 syslog adm     174 Feb 22 13:37 sshd.log
+-rw-r----- 1 syslog adm      81 Feb 22 13:37 sudo.log
+-rw-r----- 1 syslog adm     158 Feb 22 13:37 systemd-logind.log
+-rw-r----- 1 syslog adm    3841 Feb 22 14:07 systemd.log
+</pre>
+
 <code># ll /var/log/rsyslog/web</code>
 <pre>
 total 76
