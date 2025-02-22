@@ -12,6 +12,16 @@
 Логи аудита должны также уходить на удаленную систему.  
 </p>
 
+<code># ll /var/log/rsyslog</code>
+<pre>
+total 20
+drwxr-xr-x  5 syslog syslog 4096 Feb 22 13:57 ./
+drwxrwxr-x 10 root   syslog 4096 Feb 22 14:21 ../
+drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:17 log/
+drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:17 other/
+drwxr-xr-x  2 syslog syslog 4096 Feb 22 14:11 web/
+</pre>
+
 <code># ll /var/log/rsyslog/web</code>
 <pre>
 total 76
