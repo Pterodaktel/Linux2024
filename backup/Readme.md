@@ -17,3 +17,24 @@ Vagrant mirror: https://vagrant.elab.pro<br>
 Vagrant box: ubuntu/22.04<br>
 Ansible playbook: borg.yml  
 </p>
+
+<p>Переменная окружения для автоматизации ввода проля: </p>
+<code># export BORG_PASSPHRASE="borg"</code>
+
+<p>Инициализация репозитория:</p>
+<code># borg init --encryption=repokey --make-parent-dirs borg@192.168.11.160:/var/backup/client/</code>
+<pre>
+The authenticity of host '192.168.11.160 (192.168.11.160)' can't be established.
+ED25519 key fingerprint is SHA256:a/pN2NbwDYTNIE4rkTCBNo4mU+1aKtPvYDxIoHQfI0M.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</pre>
+<p>Для автоматизации этого запроса следует сначала импортировать публичный ключ с сервера backup (расположен в файле /etc/ssh/ssh_host_rsa_key.pub) и поместить его в known_hosts пользователя root</p>
+
+<p>Просмотр архивов в репозитории:</p>
+<code># borg list borg@192.168.11.160:/var/backup/</code>
+<pre>etc-2025-02-23_00:10:50              Sun, 2025-02-23 00:11:04 [6ea99eb526c7c657b2ee9b64a818c1984679eac3a7e25045bacca1670d6ece65]</pre>
+
+<p>Восстановление из архива</p>
+<code># borg extract borg@192.168.11.160:/var/backup/::etc-2025-02-23_00:10:50 /etc/issue.net</code>
+
