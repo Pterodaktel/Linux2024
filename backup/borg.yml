@@ -1,0 +1,111 @@
+---
+- hosts: all # part running on all hosts
+  become: true
+  tasks:
+  - name: Update cache
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 3600
+    tags:
+      - update-apt
+
+  - name: install packages 
+    ansible.builtin.apt:
+      name: borgbackup
+      state: latest 
+
+- hosts: backup # server backup provision
+  become: true
+  tasks:
+    - name: Add the user 'borg'
+      ansible.builtin.user:
+        name: borg
+        comment: borg backup user
+        home: /home/borg
+
+    - name: make .ssh dir
+      ansible.builtin.file:
+        path: /home/borg
+        state: directory
+        owner: borg
+        group: borg  
+        mode: '700'      
+    
+    - name: make backup dir
+      ansible.builtin.file:
+        path: /var/backup
+        state: directory
+        owner: borg
+        group: borg
+      tags: 
+        - backup point
+
+      # mkfs.ext4 /dev/sdc
+    - name: Format disk
+      community.general.filesystem:
+        fstype: ext4
+        device: /dev/sdc
+      tags:
+        - backup point
+
+    - name: Mount disk
+      ansible.posix.mount:
+        path: /var/backup
+        src: /dev/sdc
+        fstype: ext4
+        state: mounted
+      tags: 
+        - backup point
+
+- hosts: client # client provision
+  become: true
+  vars:
+    server_ip: 192.168.11.160 
+    borg_passphrase: borg
+
+  tasks:
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/id_rsa
+      register: ssh_key
+
+    - name: Store public key into borg@backup
+      delegate_to: backup
+      ansible.builtin.authorized_key:
+        key: "{{ ssh_key.public_key }}"
+        comment: "{{ ansible_hostname }}"
+        user: borg
+
+    - name: get known_hosts fingerprint for backup
+      ansible.builtin.shell: cat /etc/ssh/ssh_host_rsa_key.pub | awk '{ print $2 }'
+      delegate_to: backup
+      register: host_key
+
+    - name: Add backup server to known_hosts
+      ansible.builtin.known_hosts:
+        name: "{{ server_ip }}"
+        key: "{{ server_ip }} ssh-rsa {{ host_key.stdout }}" 
+        state: present
+
+    - name: Initialize backup repo
+      ansible.builtin.shell:
+        cmd: borg init --encryption=repokey --make-parent-dirs borg@{{ server_ip }}:/var/backup/{{ ansible_hostname }}/  
+      environment: 
+         BORG_PASSPHRASE: '{{ borg_passphrase }}'
+         BORG_NEW_PASSPHRASE: '{{ borg_passphrase }}'
+
+    - name: Create systemd borg backup service file from template
+      ansible.builtin.template:
+         src: templates/borg-backup.service.j2
+         dest: /etc/systemd/system/borg-backup.service
+
+    - name: Create systemd borg backup timer file
+      ansible.builtin.copy:
+        src: templates/borg-backup.timer
+        dest: /etc/systemd/system/borg-backup.timer
+
+    - name: Enable a timer unit for borg-backup
+      ansible.builtin.systemd:
+        name: borg-backup.timer
+        state: started
+        enabled: true
