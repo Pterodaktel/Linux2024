@@ -12,3 +12,8 @@
   <li>настроено логирование процесса бекапа. Для упрощения можно весь вывод перенаправлять в logger с соответствующим тегом. Если настроите не в syslog, то обязательна ротация логов.</li>
 </ul>
 
+<p>
+Vagrant mirror: https://vagrant.elab.pro<br>
+Vagrant box: ubuntu/22.04<br>
+Ansible playbook: borg.yml  
+</p>
