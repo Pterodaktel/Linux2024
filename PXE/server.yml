@@ -1,0 +1,94 @@
+---
+- hosts: pxeserver
+  become: true
+  vars:
+     srv_ip: "10.0.0.20"
+     iface: "enp0s8"
+     dhcp_pool: "10.0.0.100,10.0.0.120"
+  tasks:
+  - name: Update cache
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 3600
+    tags:
+      - update-apt
+
+  - name: install packages 
+    ansible.builtin.apt:
+      name:
+        - dnsmasq
+        - apache2
+      state: latest 
+
+  - name: Disable ufw firewall
+    ansible.builtin.systemd:
+      name: ufw.service
+      state: stopped
+      enabled: false
+
+  - name: Create pxe.conf file
+    ansible.builtin.template:
+      src: templates/pxe.conf.j2
+      dest: /etc/dnsmasq.d/pxe.conf
+
+  - name: Create tftp directory
+    ansible.builtin.file:
+      path: /srv/tftp
+      state: directory
+      #mode: '0755'
+
+  - name: Download netboot file
+    ansible.builtin.unarchive:
+      src: https://cdimage.ubuntu.com/ubuntu-server/noble/daily-live/current/noble-netboot-amd64.tar.gz
+      dest: /srv/tftp
+      remote_src: yes
+
+  - name: Create pxelinux.cfg/default file
+    ansible.builtin.template:
+      src: templates/default.j2
+      dest: /srv/tftp/amd64/pxelinux.cfg/default
+
+  - name: Create images directory
+    ansible.builtin.file:
+      path: /srv/images
+      state: directory
+  
+  - name: Download iso image
+    ansible.builtin.get_url:
+      url: https://cdimage.ubuntu.com/ubuntu-server/noble/daily-live/current/noble-live-server-amd64.iso
+      dest: /srv/images/noble-live-server-amd64.iso
+
+  - name: Create ks directory
+    ansible.builtin.file:
+      path: /srv/ks
+      state: directory
+
+  - name: Create meta-data file
+    ansible.builtin.file:
+      path: /srv/ks/meta-data
+      state: touch
+
+  - name: Create user-data file
+    ansible.builtin.copy:
+      src: templates/user-data
+      dest: /srv/ks/user-data
+
+  - name: Create apache virtual host 
+    ansible.builtin.template:
+      src: templates/ks-server.conf.j2
+      dest: /etc/apache2/sites-available/ks-server.conf
+
+  - name: a2ensite
+    command: a2ensite ks-server.conf
+
+  - name: Restart Apache
+    ansible.builtin.systemd:
+      name: apache2
+      state: restarted
+      enabled: true
+
+  - name: Restart dnsmasq
+    ansible.builtin.systemd:
+      name: dnsmasq
+      state: restarted
+      enabled: true
