@@ -9,6 +9,11 @@
 <p>
 Vagrant mirror: https://vagrant.elab.pro<br>
 Vagrant box: ubuntu/22.04<br>
-Ansible playbook: server.yml <br>
+Ansible playbook для настройки сервера: server.yml <br>
 </p>
 
+<p>
+  Данные для входа на устанавливаемый клиент:<br>
+  логин: otus<br>
+  пароль: 123<br>
+</p>
