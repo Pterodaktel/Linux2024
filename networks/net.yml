@@ -1,0 +1,74 @@
+---
+- hosts: all
+  become: true
+ 
+  tasks:
+  - name: Update cache
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 3600
+    tags:
+      - update-apt
+
+  - name: install packages 
+    ansible.builtin.apt:
+      pkg:
+      - traceroute
+      - net-tools
+      state: latest      
+
+  - name: install iptables-persistent 
+    ansible.builtin.apt:
+      name: iptables-persistent
+      state: latest
+    when: (ansible_hostname == "inetRouter")
+
+  - name: Disable ufw firewall
+    ansible.builtin.systemd:
+      name: ufw.service
+      state: stopped
+      enabled: false
+
+  - name: Set up NAT
+    template: 
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: root
+      group: root
+      mode: "{{ item.mode }}"
+    with_items:
+      - { src: "iptables_rules.ipv4", dest: "/etc/iptables/rules.v4", mode: "0644" }
+    when: (ansible_hostname == "inetRouter")   
+
+
+  - name: set up forward packages across routers
+    ansible.builtin.sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present
+    when: "'routers' in group_names"
+
+  - name: disable default route
+    template: 
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: root
+      group: root
+      mode: 0600
+    when: (ansible_hostname != "inetRouter") 
+    with_items:
+      - { src: "templates/99-disable-network-config.cfg", dest: "/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg" }
+      - { src: "templates/50-cloud-init.yaml", dest: "/etc/netplan/50-cloud-init.yaml" }
+
+  - name: add gateways
+    template: 
+      src: "50-vagrant_{{ansible_hostname}}.yaml"
+      dest: /etc/netplan/50-vagrant.yaml
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: restart hosts
+    reboot:
+      reboot_timeout: 600
+
