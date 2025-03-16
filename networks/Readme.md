@@ -294,3 +294,11 @@ Vagrant mirror: https://vagrant.elab.pro<br>
 Vagrant box: ubuntu/22.04<br>
 Ansible playbook: net.yml<br>
 </p>
+<p>
+Для сохранения правил iptables на inetRouter используется пакет iptables-persistent.<br>
+для отключения маршрута по умолчанию:
+- в файл /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg запичывем строку network: {config: disabled}	
+- в файл /etc/netplan/50-cloud-init.yaml добавляем сроки  
+	dhcp4-overrides:<br>
+                use-routes: false<br>
+</p>
