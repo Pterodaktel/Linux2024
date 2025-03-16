@@ -288,3 +288,9 @@ Office2----/
 
 <h3>Схема сети</h3>
 <img src="./scheme.png" alt="" align="center">
+
+<p>
+Vagrant mirror: https://vagrant.elab.pro<br>
+Vagrant box: ubuntu/22.04<br>
+Ansible playbook: net.yml<br>
+</p>
