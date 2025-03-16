@@ -56,7 +56,7 @@ Office2----/
     Соединить офисы в сеть согласно схеме и настроить роутинг
     Все сервера и роутеры должны ходить в инет черз inetRouter
     Все сервера должны видеть друг друга
-    у всех новых серверов отключить дефолт на нат (eth0), который вагрант поднимает для связи
+    у всех новых серверов отключить дефолт на нат, который вагрант поднимает для связи
     при нехватке сетевых интервейсов добавить по несколько адресов на интерфейс
 
 
@@ -116,7 +116,7 @@ Office2----/
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.2.63</TD>
 		</TR>
 		<TR>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New">Test servers</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New">Test</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.2.64/26</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">255.255.255.192</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="62" SDNUM="1049;"><FONT FACE="Calibri">62</FONT></TD>
@@ -155,7 +155,7 @@ Office2----/
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.1.127</TD>
 		</TR>
 		<TR>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New">Test servers</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New">Test</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.1.128/26</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">255.255.255.192</FONT></TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="62" SDNUM="1049;"><FONT FACE="Calibri">62</FONT></TD>
@@ -183,6 +183,30 @@ Office2----/
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.1</TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.2</TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.3</TD>
+		</TR>
+		<TR>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" COLSPAN=7 HEIGHT=17 ALIGN=CENTER><B><FONT FACE="Courier New">Office1Router &mdash; CentralRouter network</FONT></B></TD>
+			</TR>
+		<TR>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=19 ALIGN=LEFT><FONT FACE="Courier New"><BR></FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.255.8/30  </FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">255.255.255.252</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2" SDNUM="1049;"><FONT FACE="Calibri">2</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.9</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.10</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.11</TD>
+		</TR>
+		<TR>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" COLSPAN=7 HEIGHT=17 ALIGN=CENTER><B><FONT FACE="Courier New">Office2Router &mdash; CentralRouter network</FONT></B></TD>
+			</TR>
+		<TR>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New"><BR></FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.255.4/30</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>255.255.255.252</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2" SDNUM="1049;"><FONT FACE="Calibri">2</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.5</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.6</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.7</TD>
 		</TR>
 		<TR>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" COLSPAN=7 HEIGHT=17 ALIGN=CENTER><B><FONT FACE="Courier New">Свободные сети</FONT></B></TD>
@@ -215,20 +239,11 @@ Office2----/
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.0.255</TD>
 		</TR>
 		<TR>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=20 ALIGN=LEFT><FONT FACE="Courier New"><BR></FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.255.4/30</FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>255.255.255.252</TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2" SDNUM="1049;"><FONT FACE="Calibri">2</FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.5</TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.6</TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.7</TD>
-		</TR>
-		<TR>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" HEIGHT=19 ALIGN=LEFT><FONT FACE="Courier New"><BR></FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.255.8/29  </FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">255.255.255.248</FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="6" SDNUM="1049;"><FONT FACE="Calibri">6</FONT></TD>
-			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.9</TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">192.168.255.12/30  </FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT><FONT FACE="Calibri">255.255.255.252</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=RIGHT SDVAL="2" SDNUM="1049;"><FONT FACE="Calibri">2</FONT></TD>
+			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.13</TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.14</TD>
 			<TD STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" ALIGN=LEFT>192.168.255.15</TD>
 		</TR>
