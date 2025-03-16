@@ -297,8 +297,11 @@ Ansible playbook: net.yml<br>
 <p>
 Для сохранения правил iptables на inetRouter используется пакет iptables-persistent.<br>
 для отключения маршрута по умолчанию:
-- в файл /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg запичывем строку network: {config: disabled}	
-- в файл /etc/netplan/50-cloud-init.yaml добавляем сроки  
-	dhcp4-overrides:<br>
-                use-routes: false<br>
+- в файл /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg запиcывем строку <br>
+  <code>network: {config: disabled}</code><br>
+- в файле /etc/netplan/50-cloud-init.yaml добавляем сроки  
+<pre>	
+dhcp4-overrides:<br>
+&nbsp;&nbsp;use-routes: false
+</pre>
 </p>
