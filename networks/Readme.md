@@ -270,3 +270,6 @@ Office2----/
 		</TR>
 	</TBODY>
 </TABLE>
+
+<h3>Схема сети</h3>
+<img src="./scheme.png" alt="" align="center">
