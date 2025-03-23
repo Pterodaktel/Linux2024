@@ -9,7 +9,7 @@
     дефолт в инет оставить через inetRouter</li>.
 </ul>
 
-<p>Для открытия ssh порта на inetRouter реализована последовательность tcp портов: 5501 -> 5502 -> 5503. Порты можно менять в переменных KPORT1, KPORT2 и KPORT3 bash скрипта настройки firewall_inetRouter.sh.</p>
+<p>Для открытия ssh порта на inetRouter реализована последовательность tcp портов: 5501 -> 5502 -> 5503. Порты можно менять в переменных KPORT1, KPORT2 и KPORT3 bash скрипта настройки /root/firewall.sh.</p>
 <p>
     Для откытия порта с клиента в локальной сети используется комнда:<br>
     <code> # knock 192.168.255.1 5501 5502 5503</code>
@@ -53,3 +53,7 @@ This key is not known by any other names
 Are you sure you want to continue connecting (yes/no/[fingerprint])? no    
     </pre>
 </p>
+
+<p>Проброс порта 80 => 8080 для интерфейса по умолчанию делался вручную из интерфейса Virtualbox. Ip адрес внешнего интерфейса inetRouter2: 10.0.2.15 можно откорректировать в скрипте перенастройки фаервола /root/firewall.sh.</p>
+
+<p>Вариант с маскарадингом для inetRouter2 закомментирван в скрипте перенастройки фаервола /root/firewall.sh</p>
