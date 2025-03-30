@@ -1,0 +1,79 @@
+---
+- hosts: all
+  become: true
+  vars:
+    - router_id_enable: true 
+    - symmetric_routing: false
+
+  tasks:
+  # Добавляем gpg-key репозитория
+  # curl -s https://deb.frrouting.org/frr/keys.asc | apt-key add -
+  - name: add gpg frrouting.org
+    ansible.builtin.apt_key:
+      url: "https://deb.frrouting.org/frr/keys.asc"
+      state: present
+
+  # Добавляем репозиторий https://deb.frrouting.org/frr
+  # echo deb https://deb.frrouting.org/frr $(lsb_release -s -c) frr-stable > /etc/apt/sources.list.d/frr.list
+  - name: add frr repo
+    ansible.builtin.apt_repository:
+      repo: 'deb https://deb.frrouting.org/frr {{ ansible_distribution_release }} frr-stable'
+      state: present
+
+  - name: install packages 
+    ansible.builtin.apt:
+      pkg:
+      - traceroute
+      - net-tools
+      - frr
+      - frr-pythontools
+      state: present  
+      update_cache: true
+
+  - name: Disable ufw firewall
+    ansible.builtin.systemd:
+      name: ufw.service
+      state: stopped
+      enabled: false
+
+  - name: set up forward packages across routers
+    ansible.builtin.sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present      
+
+   # Отключаем запрет ассиметричного роутинга 
+  - name: set up asynchronous routing
+    ansible.builtin.sysctl:
+      name: net.ipv4.conf.all.rp_filter
+      value: '0'
+      state: present
+
+  - name: enable OSPF 
+    ansible.builtin.template:
+      src: templates/daemons
+      dest: /etc/frr/daemons
+      owner: frr
+      group: frr
+      mode: 0640
+
+  - name: set up OSPF 
+    ansible.builtin.template:
+      src: templates/frr.conf.j2
+      dest: /etc/frr/frr.conf
+      owner: frr
+      group: frr
+      mode: 0640
+    tags:
+      - setup_ospf
+
+  # Перезапускам FRR и добавляем в автозагрузку
+  - name: restart FRR
+    ansible.builtin.service:
+      name: frr
+      state: restarted
+      enabled: true
+    tags:
+      - setup_ospf
+
+

@@ -1,0 +1,72 @@
+# default to using syslog. /etc/rsyslog.d/45-frr.conf places the log in
+# /var/log/frr/frr.log
+#
+# Note:
+# FRR's configuration shell, vtysh, dynamically edits the live, in-memory
+# configuration while FRR is running. When instructed, vtysh will persist the
+# live configuration to this file, overwriting its contents. If you want to
+# avoid this, you can edit this file manually before starting FRR, or instruct
+# vtysh to write configuration to a different file.
+log syslog informational
+
+frr defaults traditional
+# имя машины
+hostname {{ ansible_hostname }}
+no ipv6 forwarding
+service integrated-vtysh-config
+
+interface enp0s8
+# имя интерфейса
+description {{ansible_hostname }}-{{ ansible_enp0s8.ipv4.network }}
+ip address {{ ansible_enp0s8.ipv4.address }}/30
+
+# параметр игнорирования MTU
+ip ospf mtu-ignore
+#Если потребуется, можно указать «стоимость» интерфейса
+{% if ansible_hostname == 'router1' %}
+ ip ospf cost 1000
+{% elif ansible_hostname == 'router2' and symmetric_routing == true %}
+ ip ospf cost 1000
+{% else %}
+ !ip ospf cost 450
+{% endif %}
+# параметры hello-интервала для OSPF пакетов
+ip ospf hello-interval 10
+# параметры dead-интервала для OSPF пакетов - Должно быть кратно предыдущему значению
+ip ospf dead-interval 30
+
+interface enp0s9
+description {{ansible_hostname }}-{{ ansible_enp0s9.ipv4.network }}
+ip address {{ ansible_enp0s9.ipv4.address }}/30
+ip ospf mtu-ignore
+#ip ospf cost 45
+ip ospf hello-interval 10
+ip ospf dead-interval 30
+
+interface enp0s10
+description net_{{ ansible_hostname }}
+#ip address 192.168.10.1/24
+ip address {{ ansible_enp0s10.ipv4.address }}/30
+ip ospf mtu-ignore
+#ip ospf cost 45
+ip ospf hello-interval 10
+ip ospf dead-interval 30
+
+# Начало настройки OSPF
+router ospf
+{% if router_id_enable == false %}!{% endif %}router-id {{ router_id }}
+# сети, которые хотим анонсировать соседним роутерам
+network {{ ansible_enp0s8.ipv4.network }}/30 area 0
+network {{ ansible_enp0s9.ipv4.network }}/30 area 0
+network {{ ansible_enp0s10.ipv4.network }}/24 area 0
+# адреса соседних роутеров
+{% if ansible_hostname == 'router1' %}
+neighbor 10.0.10.2
+neighbor 10.0.12.2
+{% elif ansible_hostname == 'router2' %}
+neighbor 10.0.10.1
+neighbor 10.0.11.1
+{% elif ansible_hostname == 'router3' %}
+neighbor 10.0.11.2
+neighbor 10.0.12.1
+{% endif %}
