@@ -13,3 +13,9 @@
 
 <h3>Схема сети</h3>
 <img src="map.png" alt="" align="center">
+<br>
+<h3>Стенд</h3>
+<p>
+Vagrant mirror: https://vagrant.elab.pro<br>
+Vagrant box: ubuntu/focal64
+</p>
