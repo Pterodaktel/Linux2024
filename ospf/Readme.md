@@ -17,5 +17,6 @@
 <h3>Стенд</h3>
 <p>
 Vagrant mirror: https://vagrant.elab.pro<br>
-Vagrant box: ubuntu/focal64
+Vagrant box: ubuntu/focal64<br>
+Ansible playbook: net.yml  
 </p>
