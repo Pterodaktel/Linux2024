@@ -1,0 +1,60 @@
+---
+- hosts: all
+  become: true
+  vars:
+   - openvpn_dev: 'tap'
+ # - openvpn_dev: 'tun'
+
+  tasks:
+  - name: install packages 
+    ansible.builtin.apt:
+      pkg:
+      - openvpn
+      - iperf3
+      - selinux-utils
+      state: present  
+      update_cache: true
+
+  - name: Disable ufw firewall
+    ansible.builtin.systemd:
+      name: ufw.service
+      state: stopped
+      enabled: false
+
+  - name: openvpn service unit
+    ansible.builtin.template: 
+      src: "templates/openvpn@service"
+      dest: "/etc/systemd/system/openvpn@.service"
+
+  - name: openvpn conf
+    ansible.builtin.template: 
+      src: "templates/{{ansible_hostname}}.conf.j2"
+      dest: "/etc/openvpn/{{ansible_hostname}}.conf"
+      # owner: root
+      # group: root
+      # mode: 0600
+
+  - name: generate key
+    ansible.builtin.shell: openvpn --genkey secret /etc/openvpn/static.key
+    delegate_to: server
+    tags:
+      - copy_key
+
+  - name: read key
+    ansible.builtin.shell: cat /etc/openvpn/static.key
+    delegate_to: server
+    register: static_key
+    tags:
+      - copy_key
+
+  - name: write key
+    ansible.builtin.shell: echo "{{ static_key.stdout }}" > /etc/openvpn/static.key
+    delegate_to: client
+    tags:
+      - copy_key
+
+  - name: start openvpn service
+    ansible.builtin.systemd:
+      name: "openvpn@{{ ansible_hostname }}"
+      state: restarted
+      enabled: true
