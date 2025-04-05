@@ -1,0 +1,106 @@
+---
+- hosts: server
+  become: true
+  vars:
+   - openvpn_dev: 'tun'
+   - openvpn_port: '1207'
+   - openvpn_proto: 'udp'
+    
+  tasks:
+  - name: install packages 
+    ansible.builtin.apt:
+      pkg:
+      - openvpn
+      - easy-rsa
+      state: present  
+      update_cache: true
+
+  - name: Disable ufw firewall
+    ansible.builtin.systemd:
+      name: ufw.service
+      state: stopped
+      enabled: false
+
+  # - name: set up ip forwarding
+  #   ansible.builtin.sysctl:
+  #     name: net.ipv4.ip_forward
+  #     value: '1'
+  #     state: present
+
+  - name: openvpn server conf
+    ansible.builtin.template: 
+      src: "templates/server.conf.j2"
+      dest: "/etc/openvpn/server.conf"
+      # owner: root
+      # group: root
+      # mode: 0600
+
+  - name: client route config
+    ansible.builtin.shell: echo 'iroute 10.10.10.0 255.255.255.0' > /etc/openvpn/client/client
+
+
+  - name: init PKI
+    ansible.builtin.shell: /usr/share/easy-rsa/easyrsa init-pki
+    args:
+      chdir: /etc/openvpn
+
+  - name: generate CA
+    ansible.builtin.shell: echo 'vpnca' | /usr/share/easy-rsa/easyrsa build-ca nopass
+    args:
+      chdir: /etc/openvpn
+
+  - name: generate server cert request
+    ansible.builtin.shell: echo 'rasvpn' | /usr/share/easy-rsa/easyrsa gen-req server nopass
+    args:
+      chdir: /etc/openvpn
+
+  - name: sign server cert request
+    ansible.builtin.shell: echo 'yes' | /usr/share/easy-rsa/easyrsa sign-req server server
+    args:
+      chdir: /etc/openvpn
+
+  - name: generate DH cert
+    ansible.builtin.shell: /usr/share/easy-rsa/easyrsa gen-dh
+    args:
+      chdir: /etc/openvpn
+
+  - name: generate openvpn key
+    ansible.builtin.shell: openvpn --genkey secret ca.key
+    args:
+      chdir: /etc/openvpn
+
+
+  - name: generate client cert request
+    ansible.builtin.shell: echo 'client' | /usr/share/easy-rsa/easyrsa gen-req client nopass
+    args:
+      chdir: /etc/openvpn
+
+  - name: sign client cert request
+    ansible.builtin.shell: echo 'yes' | /usr/share/easy-rsa/easyrsa sign-req client client
+    args:
+      chdir: /etc/openvpn
+
+
+  - name: Store client certs locally
+    ansible.builtin.fetch:
+      src: '{{ item.src }}'
+      dest: client/
+      flat: yes
+    with_items:
+      - { src: "/etc/openvpn/pki/ca.crt" }
+      - { src: "/etc/openvpn/pki/issued/client.crt" }
+      - { src: "/etc/openvpn/pki/private/client.key" }
+
+  - name: openvpn client conf
+    ansible.builtin.template: 
+      src: "templates/client.conf.j2"
+      dest: "client/client.conf"
+    delegate_to: localhost
+    become: false
+
+
+  - name: start openvpn service
+    ansible.builtin.systemd:
+      name: "openvpn@server"
+      state: restarted
+      enabled: true
