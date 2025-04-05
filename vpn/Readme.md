@@ -7,7 +7,14 @@
 Vagrant mirror: https://vagrant.elab.pro<br>
 Box: ubuntu/jammy64
 </p>
+
 <h2>Часть 1</h2>
+
+<p>
+  Стенд в каталоге vpn.<br>
+  Ansible playbook: net.yml.
+</p>
+
 <p>На сервере запускаем iperf:</p>
 <code># iperf3 -s</code>
 <pre>
@@ -62,3 +69,11 @@ Connecting to host 10.10.10.1, port 5201
 
 iperf Done.
 </pre>
+
+<h2>Часть 2</h2>
+
+<p>
+  Стенд в каталоге vpn-ras.<br>
+  Ansible playbook: ras.yml.
+</p>
+
