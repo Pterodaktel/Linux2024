@@ -19,3 +19,9 @@
 
     Настроить все без выключения selinux*
 </pre>
+
+<p>
+Vagrant box: Almalinux/9<br>
+Версия бокса: 9.5.20241203<br>
+Ansible playbook: dns.yml   
+</p>
