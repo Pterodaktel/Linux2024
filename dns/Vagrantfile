@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "almalinux-9"
+
+#  config.vm.provision "ansible" do |ansible|
+#    ansible.verbose = "vvv"
+#    ansible.playbook = "provisioning/playbook.yml"
+#    ansible.sudo = "true"
+#  end
+
+  config.vm.provider "virtualbox" do |v|
+      v.memory = 2048
+      v.cpus   = 2
+      v.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
+      v.customize ["modifyvm", :id, "--vram", "16"]
+  end
+
+  config.vm.define "ns01" do |ns01|
+    ns01.vm.network "private_network", ip: "192.168.50.10", virtualbox__intnet: "mynet"
+    ns01.vm.hostname = "ns01"
+  end
+
+  config.vm.define "ns02" do |ns02|
+    ns02.vm.network "private_network", ip: "192.168.50.11", virtualbox__intnet: "mynet"
+    ns02.vm.hostname = "ns02"
+  end
+
+  config.vm.define "client" do |client|
+    client.vm.network "private_network", ip: "192.168.50.15", virtualbox__intnet: "mynet"
+    client.vm.hostname = "client"
+  end
+
+  config.vm.define "client2" do |client2|
+    client2.vm.network "private_network", ip: "192.168.50.16", virtualbox__intnet: "mynet"
+    client2.vm.hostname = "client2"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+     timedatectl set-timezone Europe/Moscow
+     mkdir -p ~root/.ssh
+     cp ~vagrant/.ssh/auth* ~root/.ssh
+     cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+     cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
+  SHELL
+end
