@@ -38,6 +38,54 @@ key "tsig-key" {
 
 <p>При правке конфигурации named можно воспользоваться утилитой named-checkconf, она укажет, в каких строчках есть ошибки.</p>
 
+<code>[root@client etc]# dig @192.168.50.10 ns01.dns.lab</code>
+<pre>
+; <<>> DiG 9.16.23-RH <<>> @192.168.50.10 ns01.dns.lab
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 54135
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 1cafe592e8ddcaca0100000067fbadf2ddbd33eb53d1f4d2 (good)
+;; QUESTION SECTION:
+;ns01.dns.lab.                  IN      A
+
+;; ANSWER SECTION:
+ns01.dns.lab.           3600    IN      A       192.168.50.10
+
+;; Query time: 2 msec
+;; SERVER: 192.168.50.10#53(192.168.50.10)
+;; WHEN: Sun Apr 13 15:28:34 MSK 2025
+;; MSG SIZE  rcvd: 85
+</pre>
+
+<code>root@client etc]# dig @192.168.50.11 ns02.dns.lab</code>
+<pre>
+; <<>> DiG 9.16.23-RH <<>> @192.168.50.11 ns02.dns.lab
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13907
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 48500a97528de6130100000067fbae23c239d5d5da6abe74 (good)
+;; QUESTION SECTION:
+;ns02.dns.lab.                  IN      A
+
+;; ANSWER SECTION:
+ns02.dns.lab.           3600    IN      A       192.168.50.11
+
+;; Query time: 4 msec
+;; SERVER: 192.168.50.11#53(192.168.50.11)
+;; WHEN: Sun Apr 13 15:29:23 MSK 2025
+;; MSG SIZE  rcvd: 85
+</pre>
+
 <h3>Проверка на client</h3>
 <code>[root@client etc]# ping www.newdns.lab</code>
 <pre>
