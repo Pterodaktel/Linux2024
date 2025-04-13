@@ -26,6 +26,8 @@ Vagrant box: Almalinux/9<br>
 Ansible playbook: dns.yml   
 </p>
 
+<p>При их правке конфигурации named можно воспользоваться утилитой named-checkconf, она укажет, в каких строчках есть ошибки.</p>
+
 <h3>Проверка на client</h3>
 <code>[root@client etc]# ping www.newdns.lab</code>
 <pre>
