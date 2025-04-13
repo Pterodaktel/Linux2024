@@ -28,6 +28,14 @@ Ansible playbook: dns.yml
 
 <p>Чтобы сгенерировать ключи для хостов client и client2 используем утилиту tsig-keygen</p>
 
+<code>[root@ns01 data]# tsig-keygen</code>
+<pre>
+key "tsig-key" {
+        algorithm hmac-sha256;
+        secret "mCj1WD7XoOcHYHHCQigGidQ6ABpwtnXVaVECwCyqG6w=";
+};
+</pre>
+
 <p>При правке конфигурации named можно воспользоваться утилитой named-checkconf, она укажет, в каких строчках есть ошибки.</p>
 
 <h3>Проверка на client</h3>
