@@ -20,3 +20,8 @@ testClient2 <-> testServer2
 
 <h3>Схема сети</h3>
 <img src="scheme.png" alt="" align="center">
+
+<p>
+Vagrant boxes: almalinux/8, ubuntu/jammy64
+Ansible playbook: net.yml 
+</p>
