@@ -103,11 +103,12 @@ PING 10.10.10.254 (10.10.10.254) 56(84) bytes of data.
 
 centralRouter, inetRouter
 
-[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-eth1
-[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-eth2
-[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-bond0
+<code>
+[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-eth1<br>
+[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-eth2<br>
+[root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-bond0<br>
 systemctl restart NetworkManager
-
+</code>
 <pre>
 [root@inetRouter vagrant]# ping 192.168.255.2
 
