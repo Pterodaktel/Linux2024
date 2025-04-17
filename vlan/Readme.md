@@ -17,3 +17,6 @@ testClient2 <-> testServer2
 <p>
 Между centralRouter и inetRouter "пробросить" 2 линка (общая inernal сеть) и объединить их в бонд, проверить работу c отключением интерфейсов
 </p>
+
+<h3>Схема сети</h3>
+<img src="scheme.png" alt="" align="center">
