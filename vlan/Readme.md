@@ -26,8 +26,10 @@ Vagrant boxes: almalinux/8, ubuntu/jammy64 <br>
 Ansible playbook: net.yml 
 </p>
 
+<h3>Настройка VLAN на RHEL-based системах</h3>
 
 testClient1 , testServer1
+
 <code>
 vim /etc/sysconfig/network-scripts/ifcfg-vlan1<br>
 systemctl restart NetworkManager
@@ -77,8 +79,10 @@ PING 10.10.10.254 (10.10.10.254) 56(84) bytes of data.
 64 bytes from 10.10.10.254: icmp_seq=3 ttl=64 time=0.530 ms
 </pre>
 
+<h3>Настройка VLAN на Ubuntu</h3>
 
 testClient2
+
 <code>
 vim /etc/netplan/50-cloud-init.yaml<br>
 netplan apply
@@ -99,7 +103,7 @@ PING 10.10.10.254 (10.10.10.254) 56(84) bytes of data.
 64 bytes from 10.10.10.254: icmp_seq=2 ttl=64 time=0.574 ms
 </pre>
 
-
+<h3>Настройка LACP между хостами inetRouter и centralRouter</h3>
 
 centralRouter, inetRouter
 
