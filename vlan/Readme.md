@@ -26,6 +26,8 @@ Vagrant boxes: almalinux/8, ubuntu/jammy64 <br>
 Ansible playbook: net.yml 
 </p>
 
+Протокол VLAN разделяет хосты на подсети, путём добавления тэга к каждому кадру (Протокол 802.1Q). Группа устройств в сети VLAN взаимодействует так, будто устройства подключены с помощью одного кабеля.
+
 <h3>Настройка VLAN на RHEL-based системах</h3>
 
 testClient1 , testServer1
@@ -105,7 +107,11 @@ PING 10.10.10.254 (10.10.10.254) 56(84) bytes of data.
 
 <h3>Настройка LACP между хостами inetRouter и centralRouter</h3>
 
+LACP (англ. link aggregation control protocol) — открытый стандартный протокол агрегирования каналов, описанный в документах IEEE 802.3ad и IEEE 802.1aq.
+
 centralRouter, inetRouter
+
+<p>Bond интерфейс будет работать через порты eth1 и eth2.</p>
 
 <code>
 [root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-eth1<br>
