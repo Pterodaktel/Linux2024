@@ -1,0 +1,138 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+  :inetRouter => {
+        :box_name => "almalinux-8",
+        :vm_name => "inetRouter",
+        :net_undef => [
+#                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
+                   [2, "router-net"],
+                   [3, "router-net"] #,
+ #		   ["192.168.11.10", 8, "255.255.255.0",   "mynet"]
+#                  {ip: '192.168.56.10', adapter: 8},
+                ],
+        :net_def => [
+#		["192.168.255.1", 2, "255.255.255.252", "router-net"], 
+ 		   ["192.168.11.10", 8, "255.255.255.0", "mynet"]
+                 ]
+
+  },
+  :centralRouter => {
+        :box_name => "almalinux-8",
+        :vm_name => "centralRouter",
+        :net_undef => [
+                   [ 2, "router-net" ],
+                   [ 3, "router-net" ]
+                ],
+        :net_def => [
+                     [ '192.168.255.9', 6, "255.255.255.252", "office1-central" ],
+   		     [ "192.168.11.11", 8, "255.255.255.0",   "mynet" ]
+                ]
+  },
+
+  :office1Router => {
+        :box_name => "almalinux-8",
+        :vm_name => "office1Router",
+        :net_undef => [
+                        [ 3, "vlan1" ],
+                        [ 4, "vlan1" ],
+                        [ 5, "vlan2" ],
+                        [ 6, "vlan2" ]
+                ],
+        :net_def => [
+                     [ '192.168.255.10', 2, "255.255.255.252", "office1-central" ],
+   		     [ "192.168.11.20",  8, "255.255.255.0",   "mynet" ]
+                ]
+  },
+
+  :testClient1 => {
+        :box_name  => "almalinux-8",
+        :vm_name   => "testClient1",
+        :net_undef => [
+                        [ 2, "testLAN" ]
+                      ],
+        :net_def   => [
+			[ "192.168.11.21",  8, "255.255.255.0",   "mynet" ]
+                      ]
+  },
+
+  :testServer1 => {
+        :box_name  => "almalinux-8",
+        :vm_name   => "testServer1",
+        :net_undef => [
+                   [ 2, "testLAN" ]
+            ],
+        :net_def => [
+		     [ "192.168.11.22",  8, "255.255.255.0", "mynet" ]
+            ]
+  },
+
+  :testClient2 => {
+        :box_name => "ubuntu/jammy64",
+        :vm_name => "testClient2",
+        :net_undef => [
+                   [ 2, "testLAN" ]
+                ],
+        :net_def => [
+		     [ "192.168.11.31",  8, "255.255.255.0", "mynet" ]
+            ]
+  },
+
+  :testServer2 => {
+        :box_name  => "ubuntu/jammy64",
+        :vm_name   => "testServer2",
+        :net_undef => [
+	                [ 2, "testLAN" ]
+                ],
+        :net_def   => [
+		     [ "192.168.11.32",  8, "255.255.255.0", "mynet" ]
+            ]
+  },
+
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+    
+    config.vm.define boxname do |box|
+   
+      box.vm.box       = boxconfig[:box_name]
+      box.vm.host_name = boxconfig[:vm_name]
+
+      config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus   = 2
+        v.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
+        v.customize ["modifyvm", :id, "--vram", "10"]
+      end
+
+#      if boxconfig[:vm_name] == "testServer2"
+#       box.vm.provision "ansible" do |ansible|
+#        ansible.playbook = "ansible/provision.yml"
+#        ansible.inventory_path = "ansible/hosts"
+#        ansible.host_key_checking = "false"
+#        ansible.become = "true"
+#        ansible.limit = "all"
+#       end
+#      end
+
+      boxconfig[:net_def].each do |ipconf|
+	box.vm.network("private_network", ip: ipconf[0], adapter: ipconf[1], netmask: ipconf[2], virtualbox__intnet: ipconf[3])
+      end
+
+      boxconfig[:net_undef].each do |ipconf|
+	box.vm.network("private_network", auto_config: false, adapter: ipconf[0], virtualbox__intnet: ipconf[1])
+      end
+
+      box.vm.provision "shell", inline: <<-SHELL
+       timedatectl set-timezone Europe/Moscow
+       mkdir -p ~root/.ssh
+       cp ~vagrant/.ssh/auth* ~root/.ssh
+       cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+       cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
+      SHELL
+    end
+  end
+end
