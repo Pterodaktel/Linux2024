@@ -113,16 +113,18 @@ centralRouter, inetRouter
 [root@centralRouter vagrant]# vim /etc/sysconfig/network-scripts/ifcfg-bond0<br>
 systemctl restart NetworkManager
 </code>
+
 <pre>
 [root@inetRouter vagrant]# ping 192.168.255.2
-
 PING 192.168.255.2 (192.168.255.2) 56(84) bytes of data.
 64 bytes from 192.168.255.2: icmp_seq=1 ttl=64 time=2.18 ms
 64 bytes from 192.168.255.2: icmp_seq=2 ttl=64 time=0.904 ms
 64 bytes from 192.168.255.2: icmp_seq=3 ttl=64 time=0.588 ms
 </pre>
+
+<p>Отключим интерфейс на одном канале.</p>
+<code>[root@centralRouter vagrant]# ip link set down eth1</code>
 <pre>
-[root@centralRouter vagrant]# ip link set down eth1
 [root@centralRouter vagrant]# ip link
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -144,3 +146,4 @@ PING 192.168.255.2 (192.168.255.2) 56(84) bytes of data.
 7: bond0: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
     link/ether 08:00:27:6b:12:28 brd ff:ff:ff:ff:ff:ff
 </pre>
+<p>Убеждаемся, что соединение не прервалось.</p>
