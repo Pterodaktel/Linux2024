@@ -3,7 +3,7 @@
 
 MACHINES = {
   :inetRouter => {
-        :box_name => "almalinux-8",
+        :box_name => "almalinux/8",
         :vm_name => "inetRouter",
         :net_undef => [
 #                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
@@ -19,7 +19,7 @@ MACHINES = {
 
   },
   :centralRouter => {
-        :box_name => "almalinux-8",
+        :box_name => "almalinux/8",
         :vm_name => "centralRouter",
         :net_undef => [
                    [ 2, "router-net" ],
@@ -32,7 +32,7 @@ MACHINES = {
   },
 
   :office1Router => {
-        :box_name => "almalinux-8",
+        :box_name => "almalinux/8",
         :vm_name => "office1Router",
         :net_undef => [
                         [ 3, "vlan1" ],
@@ -47,7 +47,7 @@ MACHINES = {
   },
 
   :testClient1 => {
-        :box_name  => "almalinux-8",
+        :box_name  => "almalinux/8",
         :vm_name   => "testClient1",
         :net_undef => [
                         [ 2, "testLAN" ]
@@ -58,7 +58,7 @@ MACHINES = {
   },
 
   :testServer1 => {
-        :box_name  => "almalinux-8",
+        :box_name  => "almalinux/8",
         :vm_name   => "testServer1",
         :net_undef => [
                    [ 2, "testLAN" ]
@@ -130,8 +130,8 @@ Vagrant.configure("2") do |config|
        timedatectl set-timezone Europe/Moscow
        mkdir -p ~root/.ssh
        cp ~vagrant/.ssh/auth* ~root/.ssh
-       cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
-       cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
+       #cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+       #cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
       SHELL
     end
   end
