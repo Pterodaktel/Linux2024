@@ -12,6 +12,11 @@
 Vagrant box: almalinux/8<br>
 Ansible playbook для настройки клиентов: clients.yml 
 </p>
+<p>Selinux для простоты выключим.</p>
+<p>DNS в нашем стенде использовать не будем, ограничимся добавлением в файл hosts записи о сервере <code>192.168.11.10 ipa.otus.lan ipa</code></p>
+<p>Синхронизация времени будет осуществляться с помощью chrony, который уже присутствует в нашем боксе с Almalinux: <code>systemctl enable chronyd —now</code></p>
+
+<p>Установим модуль DL1 и FreeIPA-сервер: <code># dnf install -y @idm:DL1 ipa-server</code></p>
 
 <p>Запуск скрипта установки сервера Free IPA на сервере.</p>
 <code>root@ipa vagrant]# ipa-server-install</code>
