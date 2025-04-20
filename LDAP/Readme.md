@@ -145,6 +145,8 @@ files is the Directory Manager password
 The ipa-server-install command was successful
 </pre>
 
+<p>В конце настройки скрипт сообщает нам, какие порты необходимо открыть на сервере</p>
+
 <p>Проверим получение тикета для admin</p>
 <pre>
 [root@ipa vagrant]# kinit admin
