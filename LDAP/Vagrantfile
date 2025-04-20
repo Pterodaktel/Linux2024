@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-    config.vm.box = "almalinux-8"
+    config.vm.box = "almalinux/8"
  
     config.vm.provider :virtualbox do |v|
       v.memory = 2048
@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--vram", "10"]
     end
   
-    # Óêàçûâàåì èìåíà õîñòîâ è èõ IP-àäðåñà
+    # Ã“ÃªÃ Ã§Ã»Ã¢Ã Ã¥Ã¬ Ã¨Ã¬Ã¥Ã­Ã  ÃµÃ®Ã±Ã²Ã®Ã¢ Ã¨ Ã¨Ãµ IP-Ã Ã¤Ã°Ã¥Ã±Ã 
     boxes = [
       { :name => "ipa.otus.lan",
         :ip   => "192.168.11.10",
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
       }
     ]
 
-    # Öèêë çàïóñêà âèðòóàëüíûõ ìàøèí
+    # Ã–Ã¨ÃªÃ« Ã§Ã Ã¯Ã³Ã±ÃªÃ  Ã¢Ã¨Ã°Ã²Ã³Ã Ã«Ã¼Ã­Ã»Ãµ Ã¬Ã Ã¸Ã¨Ã­
     boxes.each do |opts|
       config.vm.define opts[:name] do |config|
         config.vm.hostname = opts[:name]
@@ -31,8 +31,8 @@ Vagrant.configure("2") do |config|
            timedatectl set-timezone Europe/Moscow
            mkdir -p ~root/.ssh
            cp ~vagrant/.ssh/auth* ~root/.ssh
-           cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
-           cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
+           #cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+           #cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
         SHELL
 
       end
