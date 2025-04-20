@@ -158,3 +158,60 @@ Valid starting       Expires              Service principal
 
 [root@ipa vagrant]# kdestroy
 </pre>
+
+
+<h3>На клиентах</h3>
+<p>Также получим билет Kerberos для admin</p>
+<pre>
+[root@client1 vagrant]# kinit admin
+Password for admin@OTUS.LAN:
+[root@client1 vagrant]# klist
+Ticket cache: KCM:0
+Default principal: admin@OTUS.LAN
+
+Valid starting       Expires              Service principal
+04/20/2025 14:21:01  04/21/2025 13:35:11  krbtgt/OTUS.LAN@OTUS.LAN
+</pre>
+
+<p>Пробуем добавить нового пользователя otus-user в командной строке:</p>
+<code>[root@client1 vagrant]# ipa user-add otus-user --first=Otus --last=User --password</code>
+<pre>
+Password:
+Enter Password again to verify:
+----------------------
+Added user "otus-user"
+----------------------
+  User login: otus-user
+  First name: Otus
+  Last name: User
+  Full name: Otus User
+  Display name: Otus User
+  Initials: OU
+  Home directory: /home/otus-user
+  GECOS: Otus User
+  Login shell: /bin/sh
+  Principal name: otus-user@OTUS.LAN
+  Principal alias: otus-user@OTUS.LAN
+  User password expiration: 20250420112256Z
+  Email address: otus-user@otus.lan
+  UID: 1376600003
+  GID: 1376600003
+  Password: True
+  Member of groups: ipausers
+  Kerberos keys available: True
+</pre>
+
+<p>На клиенте client2 получаем тикет созданного пользователя</p>
+<code>[root@client2 vagrant]# kinit otus-user</code>
+<pre>
+Password for otus-user@OTUS.LAN:
+Password expired.  You must change it now.
+Enter new password:
+
+[root@client2 vagrant]# klist
+Ticket cache: KCM:0
+Default principal: otus-user@OTUS.LAN
+
+Valid starting       Expires              Service principal
+04/20/2025 14:25:49  04/21/2025 13:29:45  krbtgt/OTUS.LAN@OTUS.LAN
+</pre>
