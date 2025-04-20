@@ -96,7 +96,7 @@ Chaining:     self-signed
 
 Continue to configure the system with these values? [no]: yes
 </pre>
-...
+листинг сокращен...
 <pre>
 This program will set up IPA client.
 Version 4.9.13
@@ -180,6 +180,8 @@ Valid starting       Expires              Service principal
 
 <p>Теперь можно открыть Web-интерфейс Free IPA через браузер:</p>
 <img src="Screenshot_20250420_123219.png" alt="" align="center">
+
+<p>После настройки сервера следует запустить Ansible playbook для подключения клиентов (clients.yml), указав в переменных пароль нашего admin</p>
 
 <h3>На клиентах</h3>
 <p>Также получим билет Kerberos для admin</p>
