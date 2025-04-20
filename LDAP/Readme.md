@@ -153,6 +153,7 @@ The ipa-server-install command was successful
 # firewall-cmd --permanent --zone=public --add-service=http
 # firewall-cmd --permanent --zone=public --add-service=https
 # firewall-cmd --permanent --zone=public --add-service=kerberos
+# firewall-cmd --permanent --zone=public --add-service=kpasswd
 # firewall-cmd --permanent --zone=public --add-service=ldap
 # firewall-cmd --permanent --zone=public --add-service=ldaps
 # firewall-cmd --reload
