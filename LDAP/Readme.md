@@ -178,6 +178,8 @@ Valid starting       Expires              Service principal
 [root@ipa vagrant]# kdestroy
 </pre>
 
+<p>Теперь можно открыть Web-интерфейс Free IPA через браузер:</p>
+<img src="Screenshot_20250420_123219.png" alt="" align="center">
 
 <h3>На клиентах</h3>
 <p>Также получим билет Kerberos для admin</p>
