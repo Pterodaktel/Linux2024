@@ -1,0 +1,40 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "almalinux-8"
+ 
+    config.vm.provider :virtualbox do |v|
+      v.memory = 2048
+      v.cpus   = 2
+      v.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
+      v.customize ["modifyvm", :id, "--vram", "10"]
+    end
+  
+    # ”казываем имена хостов и их IP-адреса
+    boxes = [
+      { :name => "ipa.otus.lan",
+        :ip   => "192.168.11.10",
+      },
+      { :name => "client1.otus.lan",
+        :ip   => "192.168.11.11",
+      },
+      { :name => "client2.otus.lan",
+        :ip   => "192.168.11.12",
+      }
+    ]
+
+    # ÷икл запуска виртуальных машин
+    boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        config.vm.network "private_network", ip: opts[:ip], virtualbox__intnet: "mynet"
+
+        config.vm.provision "shell", inline: <<-SHELL
+           timedatectl set-timezone Europe/Moscow
+           mkdir -p ~root/.ssh
+           cp ~vagrant/.ssh/auth* ~root/.ssh
+           cat /vagrant/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+           cat /vagrant/id_ed25519.pub >> /root/.ssh/authorized_keys
+        SHELL
+
+      end
+    end
+  end

@@ -1,0 +1,51 @@
+---
+- hosts: all
+  become: true
+  vars:
+  - admin_password: 'otusadmin'
+
+  tasks:
+  
+  # Отключение SElinux из автозагрузки - Будет применено после перезагрузки
+  - name: disable SElinux
+    ansible.builtin.selinux:
+      state: disabled
+  
+  # Отключение SElinux до перезагрузки
+  - name: disable SElinux now
+    ansible.builtin.shell: setenforce 0
+
+  # Установка временной зоны Европа/Москва    
+  - name: Set up timezone
+    ansible.builtin.timezone:
+      name: "Europe/Moscow"
+  
+  # Запуск службы Chrony, добавление её в автозагрузку
+  - name: enable chrony
+    ansible.builtin.service:
+      name: chronyd
+      state: restarted
+      enabled: true
+  
+  # Копирование файла /etc/hosts 
+  - name: change /etc/hosts
+    ansible.builtin.template:
+      src: templates/hosts.j2
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: 0644
+  
+  # Установка клиента Freeipa
+  - name: install module ipa-client etc
+    ansible.builtin.dnf:
+      name:
+        - freeipa-client
+        - vim
+      state: present
+      update_cache: true
+  
+  # Запуск скрипта добавления хоста к серверу
+  - name: add host to ipa-server
+    ansible.builtin.shell: echo -e "yes\nyes" | ipa-client-install --mkhomedir --domain=OTUS.LAN --server=ipa.otus.lan --no-ntp -p admin -w {{ admin_password }}
+
