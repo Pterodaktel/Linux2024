@@ -146,6 +146,17 @@ The ipa-server-install command was successful
 </pre>
 
 <p>В конце настройки скрипт сообщает нам, какие порты необходимо открыть на сервере</p>
+<pre>
+# systemctl enable firewalld
+# systemctl start firewalld
+# firewall-cmd --permanent --zone=public --add-service=ntp
+# firewall-cmd --permanent --zone=public --add-service=http
+# firewall-cmd --permanent --zone=public --add-service=https
+# firewall-cmd --permanent --zone=public --add-service=kerberos
+# firewall-cmd --permanent --zone=public --add-service=ldap
+# firewall-cmd --permanent --zone=public --add-service=ldaps
+# firewall-cmd --reload
+</pre>
 
 <p>Проверим получение тикета для admin</p>
 <pre>
