@@ -7,6 +7,12 @@
   <li>** Firewall должен быть включен на сервере и на клиенте</li>
 </ul>
 
+
+<p>
+Vagrant box: almalinux/8<br>
+Ansible playbook для настройки клиентов: clients.yml 
+</p>
+
 <p>Запуск скрипта установки сервера Free IPA на сервере.</p>
 <code>root@ipa vagrant]# ipa-server-install</code>
 <pre>
