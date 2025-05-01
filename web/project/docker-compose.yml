@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:8.0.0
+    container_name: db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - app-network
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:6.0.1-php8.0-fpm-alpine
+    container_name: wordpress
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: "${DB_NAME}"
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "${DB_ROOT_PASSWORD}"
+    volumes:
+      - ./wordpress:/var/www/html
+    networks:
+      - app-network
+
+  app:
+    build: ./python # для нашего приложения нужны зависимости, поэтому собираем свой образ 
+    container_name: app
+    restart: always
+    env_file:
+      - .env # импортируем в контейнер переменные из .env
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 mysite.wsgi:application" # команда для запуска django проекта, приложение будет работать на 8000 порту контейнера
+    networks:
+      - app-network
+
+  node:
+    image: node:16.13.2-alpine3.15
+    container_name: node
+    working_dir: /opt/server # переназначим рабочую директорию для удобства
+    volumes:
+      - ./node:/opt/server # пробрасываем приложение в директорию контейнера
+    command: node test.js # запуск приложения
+    networks:
+      - app-network
+
+
+  webserver:
+    depends_on: # nginx будет запускаться после всех приложений
+      - wordpress
+      - app
+      - node
+    image: nginx:1.22.0-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports: # пробросим под каждое приложение по порту
+      - 8083:8083
+      - 8081:8081
+      - 8082:8082
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
