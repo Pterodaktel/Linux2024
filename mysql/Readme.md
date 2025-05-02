@@ -141,10 +141,11 @@ Query OK, 0 rows affected, 1 warning (0.00 sec)
 </pre>
 
 
+<pre>
 root@master:/home/vagrant# mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -prootpass > master.sql
 mysqldump: [Warning] Using a password on the command line interface can be insecure.
 Warning: A partial dump from a server that has GTIDs will by default include the GTIDs of all transactions, even those that changed suppressed parts of the database. If you don't want to restore GTIDs, pass --set-gtid-purged=OFF. To make a complete dump, pass --all-databases --triggers --routines --events.
-
+</pre>
 
 
 
@@ -153,7 +154,7 @@ slave:
 vi /etc/mysql/conf.d/01-base.cnf
 vi /etc/mysql/conf.d/05-binlog.cnf
 
-
+<pre>
 root@slave:/etc/mysql/conf.d# mysql mysql -uroot -prootpass
 mysql> select @@server_id;
 +-------------+
@@ -162,13 +163,17 @@ mysql> select @@server_id;
 |           2 |
 +-------------+
 1 row in set (0.00 sec)
+</pre>
 
+<pre>
 mysql> SOURCE /vagrant/master.sql
 
 Query OK, 0 rows affected (0.00 sec)
 .......
 Query OK, 0 rows affected (0.00 sec)
+</pre>
 
+<pre>  
 mysql> SHOW DATABASES LIKE 'bet';
 +----------------+
 | Database (bet) |
@@ -176,8 +181,9 @@ mysql> SHOW DATABASES LIKE 'bet';
 | bet            |
 +----------------+
 1 row in set (0.00 sec)
+</pre>
 
-
+<pre>
 mysql> USE bet;
 Database changed
 mysql> SHOW TABLES;
@@ -191,16 +197,18 @@ mysql> SHOW TABLES;
 | outcome       |
 +---------------+
 5 rows in set (0.00 sec)
+</pre>
 
-
+<pre>
 mysql> CHANGE MASTER TO MASTER_HOST = "192.168.11.150", MASTER_PORT = 3306,
 MASTER_USER = "repl", MASTER_PASSWORD = "!OtusLinux2018", MASTER_AUTO_POSITION = 1;
 Query OK, 0 rows affected, 2 warnings (0.01 sec)
 
 mysql> START SLAVE;
 Query OK, 0 rows affected (0.00 sec)
+</pre>
 
-
+<pre>
 mysql> SHOW SLAVE STATUS\G
 *************************** 1. row ***************************
                Slave_IO_State: Waiting for master to send event
@@ -261,17 +269,17 @@ Master_SSL_Verify_Server_Cert: No
                  Channel_Name:
            Master_TLS_Version:
 1 row in set (0.00 sec)
-
+</pre>
 
 
 master:
 
 root@master:/home/vagrant# mysql bet -uroot -prootpass
-
+<pre>
 mysql> INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet');
 Query OK, 1 row affected (0.01 sec)
-
-
+</pre>
+<pre>
 mysql> SELECT * FROM bookmaker;
 +----+----------------+
 | id | bookmaker_name |
@@ -283,9 +291,11 @@ mysql> SELECT * FROM bookmaker;
 |  3 | unibet         |
 +----+----------------+
 5 rows in set (0.00 sec)
+</pre>
 
 slave:
 
+<pre>
 mysql> SELECT * FROM bookmaker;
 +----+----------------+
 | id | bookmaker_name |
@@ -297,3 +307,4 @@ mysql> SELECT * FROM bookmaker;
 |  3 | unibet         |
 +----+----------------+
 5 rows in set (0.00 sec)
+</pre>
