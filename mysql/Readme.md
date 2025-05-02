@@ -79,6 +79,9 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 </pre>
 
 <p>Чтобы репликация выполнялась успешно, нам необходимо, чтобы сервера имели разные идентификаторы: 1 и 2</p>
+
+<h3>На сервере master</h3>
+
 <pre>
 mysql> select @@server_id;
 +-------------+
@@ -148,11 +151,17 @@ Warning: A partial dump from a server that has GTIDs will by default include the
 </pre>
 
 
+
 <h3>На сервере slave</h3>
+<p>
+  В файле /etc/mysql/conf.d/05-binlog.cnf исключим из репликации ненужные таблицы: 
+</p>
+<pre>
+replicate-ignore-table=bet.events_on_demand
+replicate-ignore-table=bet.v_same_event
+</pre>
 
-vi /etc/mysql/conf.d/01-base.cnf
-vi /etc/mysql/conf.d/05-binlog.cnf
-
+<p>В файле /etc/mysql/conf.d/01-base.cnf меняем идентификатор сервера server-id=2</p>
 <pre>
 root@slave:/etc/mysql/conf.d# mysql mysql -uroot -prootpass
 mysql> select @@server_id;
@@ -163,6 +172,9 @@ mysql> select @@server_id;
 +-------------+
 1 row in set (0.00 sec)
 </pre>
+
+
+
 <p>Восстановим БД из созданного архива</p>
 <pre>
 mysql> SOURCE /vagrant/master.sql
@@ -197,7 +209,8 @@ mysql> SHOW TABLES;
 +---------------+
 5 rows in set (0.00 sec)
 </pre>
-<p>Включаем реплиуацию с master:</p>
+
+<p>Включаем репликацию с master:</p>
 <pre>
 mysql> CHANGE MASTER TO MASTER_HOST = "192.168.11.150", MASTER_PORT = 3306,
 MASTER_USER = "repl", MASTER_PASSWORD = "!OtusLinux2018", MASTER_AUTO_POSITION = 1;
@@ -207,6 +220,7 @@ mysql> START SLAVE;
 Query OK, 0 rows affected (0.00 sec)
 </pre>
 
+<p>Смотрим состояние репликации:</p>
 <pre>
 mysql> SHOW SLAVE STATUS\G
 *************************** 1. row ***************************
@@ -271,9 +285,9 @@ Master_SSL_Verify_Server_Cert: No
 </pre>
 
 
-master:
-
-root@master:/home/vagrant# mysql bet -uroot -prootpass
+<h3>На сервере master</h3>
+<p>Вносим изменения в таблицу bookmaker</p>
+<code>root@master:/home/vagrant# mysql bet -uroot -prootpass</code>
 <pre>
 mysql> INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet');
 Query OK, 1 row affected (0.01 sec)
@@ -292,8 +306,8 @@ mysql> SELECT * FROM bookmaker;
 5 rows in set (0.00 sec)
 </pre>
 
-slave:
-
+<h3>На сервере slave</h3>
+<p>Убеждаемся, что внесенные изменения отразились в реплике:</p>
 <pre>
 mysql> SELECT * FROM bookmaker;
 +----+----------------+
