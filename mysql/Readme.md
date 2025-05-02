@@ -349,3 +349,33 @@ mysql> SELECT * FROM bookmaker;
 +----+----------------+
 5 rows in set (0.00 sec)
 </pre>
+
+<p>Записи из binlog:</p>
+
+<code># mysqlbinlog /var/lib/mysql/mysql-bin.000002</code>
+<pre>
+#250501 20:55:53 server id 1  end_log_pos 219 CRC32 0x04c31985  GTID    last_committed=0        sequence_number=1       rbr_only=no
+SET @@SESSION.GTID_NEXT= 'e483b3af-26a7-11f0-8cbf-0244a4144581:39'/*!*/;
+# at 219
+#250501 20:55:53 server id 1  end_log_pos 292 CRC32 0x58419ec4  Query   thread_id=8     exec_time=0     error_code=0
+SET TIMESTAMP=1746122153/*!*/;
+SET @@session.pseudo_thread_id=8/*!*/;
+SET @@session.foreign_key_checks=1, @@session.sql_auto_is_null=0, @@session.unique_checks=1, @@session.autocommit=1/*!*/;
+SET @@session.sql_mode=1077936128/*!*/;
+SET @@session.auto_increment_increment=1, @@session.auto_increment_offset=1/*!*/;
+/*!\C utf8 *//*!*/;
+SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=8/*!*/;
+SET @@session.lc_time_names=0/*!*/;
+SET @@session.collation_database=DEFAULT/*!*/;
+BEGIN
+/*!*/;
+# at 292
+#250501 20:55:53 server id 1  end_log_pos 419 CRC32 0x17c748ba  Query   thread_id=8     exec_time=0     error_code=0
+use `bet`/*!*/;
+SET TIMESTAMP=1746122153/*!*/;
+INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet')
+/*!*/;
+# at 419
+#250501 20:55:53 server id 1  end_log_pos 450 CRC32 0x79cbaf88  Xid = 375
+COMMIT/*!*/;
+</pre>
