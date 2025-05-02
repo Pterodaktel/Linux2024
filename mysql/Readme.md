@@ -140,16 +140,15 @@ mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' IDENTIFIED BY '!OtusLinux201
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 </pre>
 
-
+<p>Далее нам нужно создать логический архив базы данных для переноса на сервер slave</p>
 <pre>
-root@master:/home/vagrant# mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -prootpass > master.sql
+root@master:/vagrant# mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -prootpass > master.sql
 mysqldump: [Warning] Using a password on the command line interface can be insecure.
 Warning: A partial dump from a server that has GTIDs will by default include the GTIDs of all transactions, even those that changed suppressed parts of the database. If you don't want to restore GTIDs, pass --set-gtid-purged=OFF. To make a complete dump, pass --all-databases --triggers --routines --events.
 </pre>
 
 
-
-slave:
+<h3>На сервере slave</h3>
 
 vi /etc/mysql/conf.d/01-base.cnf
 vi /etc/mysql/conf.d/05-binlog.cnf
@@ -164,7 +163,7 @@ mysql> select @@server_id;
 +-------------+
 1 row in set (0.00 sec)
 </pre>
-
+<p>Восстановим БД из созданного архива</p>
 <pre>
 mysql> SOURCE /vagrant/master.sql
 
@@ -172,7 +171,7 @@ Query OK, 0 rows affected (0.00 sec)
 .......
 Query OK, 0 rows affected (0.00 sec)
 </pre>
-
+<p>Мы видим, что база создана:</p>
 <pre>  
 mysql> SHOW DATABASES LIKE 'bet';
 +----------------+
@@ -182,7 +181,7 @@ mysql> SHOW DATABASES LIKE 'bet';
 +----------------+
 1 row in set (0.00 sec)
 </pre>
-
+<p>Состав таблиц:</p>
 <pre>
 mysql> USE bet;
 Database changed
@@ -198,7 +197,7 @@ mysql> SHOW TABLES;
 +---------------+
 5 rows in set (0.00 sec)
 </pre>
-
+<p>Включаем реплиуацию с master:</p>
 <pre>
 mysql> CHANGE MASTER TO MASTER_HOST = "192.168.11.150", MASTER_PORT = 3306,
 MASTER_USER = "repl", MASTER_PASSWORD = "!OtusLinux2018", MASTER_AUTO_POSITION = 1;
