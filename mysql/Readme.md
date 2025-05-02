@@ -37,6 +37,14 @@ systemctl stop mysql
 cp /vagrant/conf/conf.d/* /etc/mysql/conf.d
 chmod 644 /etc/mysql/conf.d/0*
 </pre>
+
+<p>Режим gtid включен в файле 05-binlog.cnf</p>
+<pre>
+log-slave-updates = On
+gtid-mode = On
+enforce-gtid-consistency = On
+</pre>
+
 <p>Запустим сервер MySQL</p>
 <pre>
 # systemctl start mysql
@@ -91,7 +99,8 @@ mysql> select @@server_id;
 +-------------+
 1 row in set (0.00 sec)
 </pre>
-<p>Режим gtid должен быть включен</p>
+<p>Режим gtid должен быть включен. </p>
+
 <pre>
 mysql> SHOW VARIABLES LIKE 'gtid_mode';
 +---------------+-------+
