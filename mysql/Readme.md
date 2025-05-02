@@ -315,6 +315,25 @@ mysql> SELECT * FROM bookmaker;
 5 rows in set (0.00 sec)
 </pre>
 
+<p>Посмотрим на наше изменение в binary log:</p>
+<code># mysqlbinlog /var/lib/mysql/mysql-bin.000001</code>
+<pre>
+SET @@SESSION.GTID_NEXT= 'e483b3af-26a7-11f0-8cbf-0244a4144581:39'/*!*/;
+# at 119373
+#250501 20:55:53 server id 1  end_log_pos 119446 CRC32 0xb3005762       Query   thread_id=8     exec_time=0     error_code=0
+SET TIMESTAMP=1746122153/*!*/;
+BEGIN
+/*!*/;
+# at 119446
+#250501 20:55:53 server id 1  end_log_pos 119573 CRC32 0x7bb50f97       Query   thread_id=8     exec_time=0     error_code=0
+SET TIMESTAMP=1746122153/*!*/;
+INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet')
+/*!*/;
+# at 119573
+#250501 20:55:53 server id 1  end_log_pos 119604 CRC32 0x177b770c       Xid = 670
+COMMIT/*!*/;
+</pre>
+
 <h3>На сервере slave</h3>
 <p>Убеждаемся, что внесенные изменения отразились в реплике:</p>
 <pre>
