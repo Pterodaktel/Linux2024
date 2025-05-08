@@ -8,13 +8,16 @@
   Vagrant mirror: https://vagrant.elab.pro<br>
   Vagrant box: ubuntu/jammy64<br>
 </p>
-
+<p>Установка сервера postgresql</p>
 <pre>
 apt install postgresql postgresql-contrib
 systemctl start postgresql
 </pre>
 
-На хосте node1:
+<h2>Настройка репликаци на хостах node1 и node2</h2>
+
+<h3>На хосте node1:</h3>
+<p>Создадим пользователя для репликации</p>
 <pre>
 root@node1:/home/vagrant# sudo -u postgres psql
 could not change directory to "/home/vagrant": Permission denied
@@ -26,7 +29,9 @@ postgres=# CREATE USER replicator WITH REPLICATION Encrypted PASSWORD 'Otus2022!
 CREATE ROLE
 </pre>
 
-vim /etc/postgresql/14/main/postgresql.conf
+<p>Измененим файлы конфигурации и перезапустим postgres</p>
+
+vim /etc/postgresql/14/main/postgresql.conf<br>
 vim /etc/postgresql/14/main/pg_hba.conf
 
 <pre>
@@ -43,26 +48,29 @@ May 03 14:21:11 node1 systemd[1]: Starting PostgreSQL RDBMS...
 May 03 14:21:11 node1 systemd[1]: Finished PostgreSQL RDBMS.
 </pre>
 
-На хосте node2:
-
+<h3>На хосте node2:</h3>
+<p>Удалим файлы кластера</p>
 <pre>
 systemctl stop postgresql
 rm -Rf /var/lib/postgresql/14/main/*
 </pre>
-
+<p>Нужно сделать копию кластера на сервер репликации</p>
 <pre>
 pg_basebackup -h 192.168.11.11 -U replicator -p 5432 -D /var/lib/postgresql/14/main/ -R -P
 Password:
 26275/26275 kB (100%), 1/1 tablespace
-
-chown -R postgres:postgres /var/lib/postgresql/14/main/*
-
+</pre>
+<p>Восстановим права</p>
+<code>chown -R postgres:postgres /var/lib/postgresql/14/main/*</code><br>
+Также внесем изменения в файл конфигурации:
+<pre>
 vim /etc/postgresql/14/main/postgresql.conf
 systemctl start postgresql
 </pre>
 
-На хосте node1:
+<h3>На хосте node1:</h3>
 
+<p>Создадим тестовую базу и убедимся в начале репликации</p>
 <pre>
 sudo -u postgres psql
 
@@ -89,8 +97,8 @@ postgres=#  select * from pg_stat_replication;
 (1 row)
 </pre>
 
-
-
+<h3>На хосте node2:</h3>
+Убеждаемся в успешной репликации созданной БД: 
 <pre>
 root@node2:/etc/postgresql/14/main# sudo -u postgres psql
 psql (14.17 (Ubuntu 14.17-0ubuntu0.22.04.1))
@@ -121,20 +129,14 @@ pid  |  status   | receive_start_lsn | receive_start_tli | written_lsn | flushed
 (END)
 </pre>
 
+<h2>Резервное копирование c помощью barman</h2>
 
-node1,node2:
+<p>На хостах node1 и node2 установим необходимое ПО: <code>apt install barman-cli</code></p>
 
-<pre>
-apt install barman-cli
-</pre>
+<p>На хосте barman: <code>apt install barman-cli barman postgresql</code></p>
 
-barman:
-
-<pre>
-apt install barman-cli barman postgresql
-</pre>
-
-node1:
+<h3>На хосте node1:</h3>
+<p>Нужно настроить двустороннюю авторизацию по ssh</p>
 <pre>
 root@node1:/var/lib/postgresql/14/main# su postgres
 postgres@node1:~/14/main$ cd
@@ -157,55 +159,17 @@ The key's randomart image is:
 |. + =  B         |
 | o * oo S .      |
 |. . =. . . .     |
-|.  o  X o .      |
+|.  o  X . .      |
 | E   B B .       |
 |    o.oo+        |
 +----[SHA256]-----+
 
 postgres@node1:~$ cat ~/.ssh/id_rsa.pub
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCsWrFyaxYQQDAHs/P9aljkR82G4a1/kt7xhy1VUEvbnDprsduCawPk96rESek8b8uhOFBWtiLhyb9U4VMoq9vuhVsDS1TIYd6OkDUBEjuW5wfbmPJ2gNNHv4cYG1Rlk4IpNkx/wslB/N7V62nvKffdMAsB/4YOgrbzaeZjpQEB93g7rWkpyYTkq2gILbYnDyu6UOXOq7kkILG999F2MySADy7A1W33AUmKxRw906eFy5xpCpit7uO7ps57JXiKjWmsv8X6abkan4vMgagxUNFwtoEZ/HBWy1lTxy/E4ErhZFkwRjtyexn/AjgzCvfyb9Tr7Tp38T3AZKBe/evXJDU+eout9s7kG22FyY3ORgKnMqWO0SpcGswf1KCHP3Jfz0G2GAXFvK+JL/mWWmnl7O2KoZPc2K/LTeB0zWRBbNVsYBfceW6Pw5+PW71WyRUsTOPtyM4Kdjg93GLn7+dH8x58NtxTUu+uKdzORsS2OjG5UtPOyySmbtv0tTHFclQJpZT6f9V7ON2Oh2pGJzFWVriDpsA9YWyiIxl+fJpo4aynH7HNMimKDzByLdUid6iUulUQ1uvdGCVP1RdOmrEEXQ/B9hnHsVYf916y69HjA4c0eurYqfa3ZQcZ2JMyWg+ScSnnfDezlxrYnA++mzavBf8R83iWi/16mb497EtXrXkCAQ== postgres@node1
 </pre>
+<p>Содержимое id_rsa.pub нужно поместить на хост barman в authorized_keys одноименного пользователя</p>
 
-<pre>
-psql (14.17 (Ubuntu 14.17-0ubuntu0.22.04.1))
-Type "help" for help.
-
-postgres=# CREATE USER barman WITH REPLICATION Encrypted PASSWORD 'Otus2022!';
-CREATE ROLE
-
-postgres=# GRANT EXECUTE ON FUNCTION pg_start_backup(text, boolean, boolean) to barman;
-GRANT
-postgres=# GRANT EXECUTE ON FUNCTION pg_stop_backup() to barman;
-GRANT
-postgres=# GRANT EXECUTE ON FUNCTION pg_stop_backup(boolean, boolean) to barman;
-GRANT
-postgres=# GRANT pg_read_all_settings TO barman;
-GRANT ROLE
-postgres=# GRANT pg_read_all_stats TO barman;
-GRANT ROLE
-postgres=# GRANT EXECUTE ON FUNCTION pg_switch_wal() to barman;
-GRANT
-postgres=# GRANT EXECUTE ON FUNCTION pg_create_restore_point(text) to barman;
-GRANT
-</pre>
-
-<pre>
-/etc/postgresql/14/main/pg_hba.conf
-systemctl restart postgresql
-
-postgres=#  CREATE DATABASE otus;
-CREATE DATABASE
-postgres=# \c otus;
-You are now connected to database "otus" as user "postgres".
-
-otus=# CREATE TABLE test (id int, name varchar(30));
-CREATE TABLE
-otus=# INSERT INTO test VALUES (1, 'alex');
-INSERT 0 1
-</pre>
-
-
-barman:
+<h3>На хосте barman:</h3>
+<p>Продолжение настройки авторизации по ssh:</p>
 <pre>
 barman@barman:~$ mkdir .ssh
 vim /var/lib/barman/.ssh/authorized_keys
@@ -241,14 +205,51 @@ The key's randomart image is:
 +----[SHA256]-----+
 
 root@barman:/var/lib/barman/.ssh# cat ./id_rsa.pub
-</deb>
-
-node1:
-<pre>  
-postgres@node1:~/.ssh$ vim /var/lib/postgresql/.ssh/authorized_keys
 </pre>
 
-barman:
+<h3>На хосте node1:</h3>
+<code>postgres@node1:~/.ssh$ vim /var/lib/postgresql/.ssh/authorized_keys</code>
+
+<p>На сервере node1 cоздадим postgres-пользователя barman. Согласно официальному руководству назначим необходимые права</p>
+<pre>
+#psql
+postgres=# CREATE USER barman WITH REPLICATION Encrypted PASSWORD 'Otus2022!';
+CREATE ROLE
+postgres=# GRANT EXECUTE ON FUNCTION pg_start_backup(text, boolean, boolean) to barman;
+GRANT
+postgres=# GRANT EXECUTE ON FUNCTION pg_stop_backup() to barman;
+GRANT
+postgres=# GRANT EXECUTE ON FUNCTION pg_stop_backup(boolean, boolean) to barman;
+GRANT
+postgres=# GRANT pg_read_all_settings TO barman;
+GRANT ROLE
+postgres=# GRANT pg_read_all_stats TO barman;
+GRANT ROLE
+postgres=# GRANT EXECUTE ON FUNCTION pg_switch_wal() to barman;
+GRANT
+postgres=# GRANT EXECUTE ON FUNCTION pg_create_restore_point(text) to barman;
+GRANT
+</pre>
+<p>Разрешим доступ пользователю по сети</p>
+<pre>
+/etc/postgresql/14/main/pg_hba.conf
+systemctl restart postgresql
+</pre>
+Создание тестовой БД с таблицей:
+<pre>
+postgres=#  CREATE DATABASE otus;
+CREATE DATABASE
+postgres=# \c otus;
+You are now connected to database "otus" as user "postgres".
+
+otus=# CREATE TABLE test (id int, name varchar(30));
+CREATE TABLE
+otus=# INSERT INTO test VALUES (1, 'alex');
+INSERT 0 1
+</pre>
+
+<h3>На хосте barman:</h3>
+
 <pre>
 barman@barman:~$ vim ~/.pgpass
 chmod 600 ~/.pgpass
@@ -340,7 +341,8 @@ Server node1:
         archiver errors: OK
 </pre>
 
-node1:
+
+<h3>На хосте node1:</h3>
 <pre>
 postgres=# \l
  otus      | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
@@ -359,7 +361,7 @@ postgres=# DROP DATABASE otus_test;
 DROP DATABASE
 </pre>
 
-barman:
+<h3>На хосте barman:</h3>
 <pre>
 barman@barman:/var/log/barman$ barman list-backup node1
 node1 20250504T194106 - Sun May  4 19:41:07 2025 - Size: 41.8 MiB - WAL Size: 0 B
@@ -388,7 +390,7 @@ Recovery completed (start time: 2025-05-04 20:50:12.243793, elapsed time: 4 seco
 Your PostgreSQL server has been successfully prepared for recovery!
 </pre>
 
-node1:
+<h3>На хосте node1:</h3>
 
 <pre>
 root@node1:/etc/postgresql/14/main# systemctl restart  postgresql
