@@ -245,11 +245,13 @@ INSERT 0 1
 
 <h3>На хосте barman:</h3>
 
+<p>Находясь в пользователе barman создаём файл ~/.pgpass со следующим содержимым: <code>192.168.11.11:5432:*:barman:Otus2022!</code><br>
+В данном файле указываются реквизиты доступа для postgres.</p>
 <pre>
 barman@barman:~$ vim ~/.pgpass
 chmod 600 ~/.pgpass
 </pre>
-
+Проверим подключение к хосту node1:
 <pre>
 barman@barman:~$ psql -h 192.168.11.11 -U barman -d postgres
 psql (14.17 (Ubuntu 14.17-0ubuntu0.22.04.1))
@@ -276,7 +278,7 @@ barman@barman:/etc$ psql -c 'SELECT version()' -U barman -h 192.168.11.11 postgr
  PostgreSQL 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
 (1 row)
 </pre>
-
+Теперь проверим работу barman: 
 <pre>
 barman@barman:/var/log/barman$ barman switch-wal node1
 The WAL file 000000010000000000000003 has been closed on server 'node1'
@@ -286,6 +288,7 @@ barman@barman:/var/log/barman$ barman cron
 Starting WAL archiving for server node1
 Starting check-backup for backup 20250504T194106 of server node1
 </pre>
+Запускаем резервную копию: 
 <pre>
 barman@barman:/var/log/barman$ barman backup node1
 Starting backup using postgres method for server node1 in /var/lib/barman/node1/base/20250504T194106
@@ -310,7 +313,7 @@ WARNING: IMPORTANT: this backup is classified as WAITING_FOR_WALS, meaning that 
 This is a common behaviour in concurrent backup scenarios, and Barman automatically set the backup as DONE once all the required WAL files have been archived.
 Hint: execute the backup command with '--wait'
 </pre>
-
+Убеждаемся, что все в порядке:
 <pre>
 barman@barman:/var/log/barman$ barman check node1
 Server node1:
@@ -338,8 +341,8 @@ Server node1:
         archiver errors: OK
 </pre>
 
-
 <h3>На хосте node1:</h3>
+Для проверки удалим базы otus и otus_test:
 <pre>
 postgres=# \l
  otus      | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
@@ -359,11 +362,12 @@ DROP DATABASE
 </pre>
 
 <h3>На хосте barman:</h3>
+Посмотрим список доступных архивов
 <pre>
 barman@barman:/var/log/barman$ barman list-backup node1
 node1 20250504T194106 - Sun May  4 19:41:07 2025 - Size: 41.8 MiB - WAL Size: 0 B
 </pre>
-
+Восстановим сервер node1:
 <pre>
 barman@barman:/var/log/barman$ barman recover node1 20250504T194106 /var/lib/postgresql/14/main/ --remote-ssh-command "ssh postgres@192.168.11.11"
 Starting remote restore for server node1 using backup 20250504T194106
@@ -388,9 +392,9 @@ Your PostgreSQL server has been successfully prepared for recovery!
 </pre>
 
 <h3>На хосте node1:</h3>
-
+Нужно перезапустить postgres, после этого убеждаемся, что базы восстановлены:
 <pre>
-root@node1:/etc/postgresql/14/main# systemctl restart  postgresql
+root@node1:/etc/postgresql/14/main# systemctl restart postgresql
 root@node1:/etc/postgresql/14/main# su postgres
 postgres@node1:/etc/postgresql/14/main$ psql
 psql (14.17 (Ubuntu 14.17-0ubuntu0.22.04.1))
