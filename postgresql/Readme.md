@@ -176,12 +176,7 @@ vim /var/lib/barman/.ssh/authorized_keys
 
 root@barman:/var/lib/barman/.ssh# su barman
 barman@barman:~/.ssh$ cd
-barman@barman:~$ pwd
-/var/lib/barman
-barman@barman:~$ ssh-leygen -t rsa -b 4096
-Command 'ssh-leygen' not found, did you mean:
-  command 'ssh-keygen' from deb openssh-client (1:8.9p1-3ubuntu0.11)
-Try: apt install <deb name>
+
 barman@barman:~$ ssh-keygen -t rsa -b 4096
 Generating public/private rsa key pair.
 Enter file in which to save the key (/var/lib/barman/.ssh/id_rsa):
@@ -253,7 +248,9 @@ INSERT 0 1
 <pre>
 barman@barman:~$ vim ~/.pgpass
 chmod 600 ~/.pgpass
+</pre>
 
+<pre>
 barman@barman:~$ psql -h 192.168.11.11 -U barman -d postgres
 psql (14.17 (Ubuntu 14.17-0ubuntu0.22.04.1))
 SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
@@ -269,8 +266,8 @@ barman@barman:~$ psql -h 192.168.11.11 -U barman -c "IDENTIFY_SYSTEM" replicatio
 </pre>
 
 
-# touch /etc/barman.conf
-touch /etc/barman.d/node1.conf
+vi /etc/barman.conf<br>
+vi /etc/barman.d/node1.conf<br>
 
 <pre>
 barman@barman:/etc$ psql -c 'SELECT version()' -U barman -h 192.168.11.11 postgres
